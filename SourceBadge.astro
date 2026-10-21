@@ -1,0 +1,30 @@
+---
+interface Props { src: string; }
+const { src } = Astro.props;
+const num = src.replace(/^S/, '');
+---
+<button class="src" type="button" data-source={src} aria-label={"查看来源 " + src} title={"查看来源 " + src}>{num}</button>
+
+<style>
+  .src {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15em;
+    height: 1.15em;
+    margin-left: 0.25em;
+    padding: 0;
+    font-size: 0.62em;
+    line-height: 1;
+    font-family: var(--font-body);
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--c-gold) 70%, transparent);
+    background: color-mix(in srgb, var(--c-gold) 26%, transparent);
+    color: var(--c-plum);
+    cursor: pointer;
+    vertical-align: super;
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .src:hover { background: var(--c-gold); transform: translateY(-1px); }
+  .src:focus-visible { outline: 2px solid var(--c-plum); outline-offset: 2px; }
+</style>

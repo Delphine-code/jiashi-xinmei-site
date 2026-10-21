@@ -1,0 +1,168 @@
+---
+import siteData from '../data/site-data.json';
+import SourceBadge from './SourceBadge.astro';
+const s = siteData.chain.slider;
+---
+<section class="cs" data-chain data-cfg={JSON.stringify(s)} data-reveal>
+  <header class="cs__head">
+    <p class="cs__desc">{s.desc}<SourceBadge src={s.src} /></p>
+  </header>
+
+  <div class="cs__readout">
+    <div class="cs__metric">
+      <span class="cs__num" data-cs-days>20</span><span class="cs__unit">天</span>
+      <p class="cs__label">鲜果可销售周期</p>
+    </div>
+    <div class="cs__metric">
+      <span class="cs__num" data-cs-loss>30</span><span class="cs__unit">%</span>
+      <p class="cs__label">估算货损率</p>
+    </div>
+    <div class="cs__metric cs__metric--wide">
+      <span class="cs__small" data-cs-radius>产地周边 300 公里</span>
+      <p class="cs__label">销售半径</p>
+    </div>
+  </div>
+
+  <div class="cs__bar" aria-hidden="true"><span data-cs-fill></span></div>
+
+  <input type="range" min="0" max="100" value="0" step="1" data-cs-range aria-label="调整冷链进度" />
+  <div class="cs__controls">
+    <div class="cs__scale"><span>鲜果直发</span><span>三级冷链 + 多式联运</span></div>
+    <button type="button" class="cs__toggle" data-cs-toggle aria-pressed="true">
+      <span class="cs__toggle-icon" aria-hidden="true">Ⅱ</span>
+      <span data-cs-toggle-label>自动播放中</span>
+    </button>
+  </div>
+
+  <p class="cs__state" data-cs-state></p>
+</section>
+
+<script>
+  function chainInit() {
+    const root = document.querySelector('[data-chain]');
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+    let cfg;
+    try { cfg = JSON.parse(root.dataset.cfg); } catch (e) { return; }
+    const levels = cfg.levels;
+    const range = root.querySelector('[data-cs-range]');
+    const daysEl = root.querySelector('[data-cs-days]');
+    const lossEl = root.querySelector('[data-cs-loss]');
+    const radiusEl = root.querySelector('[data-cs-radius]');
+    const stateEl = root.querySelector('[data-cs-state]');
+    const fill = root.querySelector('[data-cs-fill]');
+    const toggle = root.querySelector('[data-cs-toggle]');
+    const toggleIcon = root.querySelector('.cs__toggle-icon');
+    const toggleLabel = root.querySelector('[data-cs-toggle-label]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let playing = !reducedMotion;
+    let progress = 0;
+    let frame = 0;
+    let lastTime = 0;
+    let holdUntil = 0;
+
+    const updateToggle = () => {
+      toggle?.setAttribute('aria-pressed', String(playing));
+      if (toggleIcon) toggleIcon.textContent = playing ? 'Ⅱ' : '▶';
+      if (toggleLabel) toggleLabel.textContent = playing ? '自动播放中' : '继续播放';
+    };
+
+    const render = (t01) => {
+      const days = Math.round(20 + (180 - 20) * t01);
+      const loss = (30 - (30 - 5) * t01).toFixed(0);
+      daysEl.textContent = String(days);
+      lossEl.textContent = loss;
+      fill.style.width = (8 + t01 * 92).toFixed(1) + '%';
+      let best = levels[0];
+      levels.forEach((l) => { if (t01 * 100 >= l.at) best = l; });
+      radiusEl.textContent = best.radius;
+      stateEl.textContent = best.desc;
+      range.setAttribute('aria-valuetext', days + ' 天，销售半径 ' + best.radius);
+    };
+
+    const stopAuto = () => {
+      playing = false;
+      updateToggle();
+    };
+
+    const animate = (time) => {
+      if (!lastTime) lastTime = time;
+      const elapsed = time - lastTime;
+      lastTime = time;
+      if (playing && time >= holdUntil) {
+        if (progress >= 1) {
+          progress = 0;
+          holdUntil = 0;
+        } else {
+          progress += elapsed / 14500;
+          if (progress >= 1) {
+            progress = 1;
+            holdUntil = time + 1800;
+          }
+        }
+        range.value = String(Math.round(progress * 100));
+        render(progress);
+      }
+      frame = requestAnimationFrame(animate);
+    };
+
+    range.addEventListener('input', () => {
+      stopAuto();
+      progress = parseFloat(range.value) / 100;
+      render(progress);
+    });
+    range.addEventListener('pointerdown', stopAuto);
+    toggle?.addEventListener('click', () => {
+      playing = !playing;
+      if (playing) {
+        progress = parseFloat(range.value) / 100;
+        if (progress >= 1) progress = 0;
+        range.value = String(Math.round(progress * 100));
+        render(progress);
+        lastTime = 0;
+        holdUntil = 0;
+      }
+      updateToggle();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAuto();
+    }, { once: true });
+    updateToggle();
+    render(0);
+    if (playing) frame = requestAnimationFrame(animate);
+  }
+  document.addEventListener('astro:page-load', chainInit);
+  if (document.readyState !== 'loading') chainInit();
+  else document.addEventListener('DOMContentLoaded', chainInit);
+</script>
+
+<style>
+  .cs {
+    border: 1px solid var(--c-line);
+    border-radius: calc(var(--radius) + 6px);
+    background: linear-gradient(180deg, var(--c-white), color-mix(in srgb, var(--c-plum) 6%, var(--c-white)));
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: var(--shadow);
+  }
+  .cs__desc { color: var(--c-muted); max-width: 56ch; margin: 0 0 1rem; font-size: 0.9rem; }
+  .cs__readout { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); margin-bottom: 1.4rem; }
+  .cs__num { font-family: var(--font-num); font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem); color: var(--c-plum); line-height: 1; }
+  .cs__unit { font-size: 1rem; color: var(--c-muted); margin-left: 0.25rem; }
+  .cs__small { display: block; font-size: 1.05rem; color: var(--c-plum); }
+  .cs__label { margin: 0.3rem 0 0; font-size: 0.84rem; color: var(--c-muted); }
+  .cs__metric--wide { grid-column: span 2; }
+  .cs__bar { height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--c-plum) 10%, var(--c-white)); overflow: hidden; margin-bottom: 0.9rem; }
+  .cs__bar span { display: block; width: 8%; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--c-plum), var(--c-gold)); transition: width 0.15s linear; }
+  .cs input[type='range'] { width: 100%; accent-color: var(--c-plum); height: 1.6rem; cursor: pointer; }
+  .cs__controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .cs__scale { display: flex; justify-content: space-between; flex: 1; font-size: 0.76rem; color: var(--c-muted); }
+  .cs__toggle { display: inline-flex; align-items: center; gap: 0.38rem; flex: 0 0 auto; border: 1px solid var(--c-line); border-radius: 999px; padding: 0.3rem 0.65rem; background: var(--c-white); color: var(--c-plum); font: inherit; font-size: 0.72rem; cursor: pointer; transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease); }
+  .cs__toggle:hover, .cs__toggle:focus-visible { border-color: var(--c-gold); background: color-mix(in srgb, var(--c-gold) 12%, var(--c-white)); transform: translateY(-1px); }
+  .cs__toggle-icon { display: inline-grid; place-items: center; width: 1rem; height: 1rem; font-size: 0.64rem; }
+  .cs__state { margin: 1.1rem 0 0; color: var(--c-plum); min-height: 2.8em; }
+  @media (max-width: 560px) { .cs__metric--wide { grid-column: span 1; } }
+  @media (max-width: 560px) {
+    .cs__controls { align-items: flex-end; flex-direction: column-reverse; gap: 0.45rem; }
+    .cs__scale { width: 100%; }
+  }
+</style>

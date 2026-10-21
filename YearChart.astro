@@ -1,0 +1,302 @@
+---
+import siteData from '../data/site-data.json';
+import SourceBadge from './SourceBadge.astro';
+const c = siteData.charts;
+const s = c.series;
+---
+<section class="yc" data-yearchart data-cfg={JSON.stringify(c)} data-reveal>
+  <header class="yc__head">
+    <div>
+      <p class="yc__desc">产量逐年增加，2026 年为预计值。<SourceBadge src="S2" /></p>
+    </div>
+    <div class="yc__segs" role="group" aria-label="年份切换">
+      {c.years.map((y, i) => (
+        <button type="button" class="seg" data-year={String(i)}>{y}</button>
+      ))}
+    </div>
+  </header>
+
+  <div class="yc__toolbar">
+    <div class="yc__segs yc__segs--sm" role="group" aria-label="图型切换">
+      <button type="button" class="seg is-on" data-type="bar">柱状</button>
+      <button type="button" class="seg" data-type="line">折线</button>
+    </div>
+    <div class="yc__keys">
+      <span class="key"><i style="background:#6b344d"></i>产量（万吨）</span>
+    </div>
+  </div>
+
+  <div class="yc__chart" data-chart-a></div>
+  <p class="yc__cap">图 1 ｜产量（2026 为预计值）</p>
+
+  <div class="yc__grid">
+    <div class="yc__chart yc__chart--sm" data-chart-b></div>
+    <aside class="yc__panel" data-panel></aside>
+  </div>
+  <p class="yc__cap">图 2 ｜区域公用品牌价值与全国排名（2024—2025） <SourceBadge src="S5" /></p>
+</section>
+
+<script>
+  import * as echarts from 'echarts';
+
+  const PLUM = '#6b344d';
+  const GOLD = '#b58a45';
+  function yearInit() {
+    const root = document.querySelector('[data-yearchart]');
+    if (!root) return;
+    let cfg;
+    try { cfg = JSON.parse(root.dataset.cfg); } catch (e) { return; }
+    const years = cfg.years;
+    const s = cfg.series;
+    const state = { year: years.length - 1, type: 'bar' };
+
+    const elA = root.querySelector('[data-chart-a]');
+    const elB = root.querySelector('[data-chart-b]');
+    const panel = root.querySelector('[data-panel]');
+    let chartA = echarts.getInstanceByDom(elA);
+    if (!chartA) chartA = echarts.init(elA);
+    let chartB = echarts.getInstanceByDom(elB);
+    if (!chartB) chartB = echarts.init(elB);
+
+    const area = (idx) => [{
+      name: years[idx],
+      itemStyle: { color: 'rgba(216,168,90,0.16)' },
+      xAxis: years[idx]
+    }, { xAxis: years[Math.min(idx + 1, years.length - 1)] }];
+
+    const renderA = () => {
+      const main = [
+        {
+          name: s.output.label,
+          type: state.type,
+          data: s.output.values,
+          barMaxWidth: 46,
+          itemStyle: { color: PLUM, borderRadius: [6, 6, 0, 0] },
+          lineStyle: { width: 3, color: PLUM },
+          areaStyle: state.type === 'line' ? { color: 'rgba(91,44,111,0.14)' } : undefined,
+          markArea: { silent: true, data: [area(state.year)] },
+          label: { show: true, position: 'top', color: PLUM, formatter: (params) => params.dataIndex === 2 ? params.value + ' 预计' : params.value }
+        }
+      ];
+      chartA.setOption({
+        grid: { left: 8, right: 8, top: 40, bottom: 8, containLabel: true },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        xAxis: { type: 'category', data: years, axisLine: { lineStyle: { color: 'rgba(107,52,77,0.28)' } }, axisLabel: { color: '#6e6962' } },
+        yAxis: { type: 'value', name: s.output.label, nameTextStyle: { color: '#6e6962' }, splitLine: { lineStyle: { color: 'rgba(107,52,77,0.16)' } }, axisLabel: { color: '#6e6962' } },
+        series: main
+      }, { notMerge: false });
+    };
+
+    const renderB = () => {
+      chartB.setOption({
+        grid: { left: 8, right: 8, top: 40, bottom: 8, containLabel: true },
+        tooltip: { trigger: 'axis' },
+        xAxis: { type: 'category', data: years, axisLine: { lineStyle: { color: 'rgba(107,52,77,0.28)' } }, axisLabel: { color: '#6e6962' } },
+        yAxis: [
+          { type: 'value', name: s.brandValue.label, nameTextStyle: { color: '#6e6962' }, splitLine: { lineStyle: { color: 'rgba(107,52,77,0.16)' } }, axisLabel: { color: '#6e6962' } },
+          { type: 'value', name: s.brandRank.label, inverse: true, nameTextStyle: { color: '#6e6962' }, splitLine: { show: false }, axisLabel: { color: '#6e6962' } }
+        ],
+        series: [
+          {
+            name: s.brandValue.label,
+            type: 'bar',
+            data: s.brandValue.values,
+            barMaxWidth: 46,
+            itemStyle: { color: GOLD, borderRadius: [6, 6, 0, 0] },
+            markArea: { silent: true, data: [area(state.year)] },
+            label: { show: true, position: 'top', color: '#6b344d', formatter: '{c}' }
+          },
+          {
+            name: s.brandRank.label,
+            type: 'line',
+            yAxisIndex: 1,
+            data: s.brandRank.values,
+            connectNulls: true,
+            lineStyle: { width: 3, color: PLUM },
+            itemStyle: { color: PLUM },
+            symbolSize: 9
+          }
+        ]
+      }, { notMerge: false });
+    };
+
+    const renderPanel = () => {
+      const i = state.year;
+      const out = s.output.values[i];
+      const bv = s.brandValue.values[i];
+      const br = s.brandRank.values[i];
+      const rows = [];
+      rows.push('<p class="yc__pyear">' + years[i] + ' 年</p>');
+      rows.push('<ul>');
+      rows.push('<li>产量：' + (out == null ? '数据待补' : out + ' 万吨' + (i === 2 ? '（预计）' : '')) + '</li>');
+      if (bv != null) rows.push('<li>品牌价值：' + bv + ' 亿元</li>');
+      if (br != null) rows.push('<li>品牌全国排名：第 ' + br + ' 位</li>');
+      rows.push('</ul>');
+      panel.innerHTML = rows.join('');
+    };
+
+    const renderAll = () => { renderA(); renderB(); renderPanel(); };
+
+    root.querySelectorAll('[data-year]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.year = parseInt(btn.dataset.year, 10);
+        root.querySelectorAll('[data-year]').forEach((b) => b.classList.toggle('is-on', b === btn));
+        renderAll();
+      });
+    });
+    root.querySelectorAll('[data-type]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.type = btn.dataset.type;
+        root.querySelectorAll('[data-type]').forEach((b) => b.classList.toggle('is-on', b === btn));
+        renderA();
+      });
+    });
+
+    root.querySelectorAll('[data-year]').forEach((b) => b.classList.toggle('is-on', parseInt(b.dataset.year, 10) === state.year));
+    renderAll();
+
+    if (root.dataset.resized !== '1') {
+      root.dataset.resized = '1';
+      window.addEventListener('resize', () => {
+        const a = echarts.getInstanceByDom(elA); if (a) a.resize();
+        const b = echarts.getInstanceByDom(elB); if (b) b.resize();
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', yearInit);
+  if (document.readyState !== 'loading') yearInit();
+  else document.addEventListener('DOMContentLoaded', yearInit);
+</script>
+
+<style>
+  .yc {
+    border: 1px solid var(--c-line);
+    border-radius: calc(var(--radius) + 6px);
+    background: var(--c-white);
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: var(--shadow);
+  }
+  .yc__head { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: flex-end; }
+  .yc__desc { color: var(--c-muted); max-width: 52ch; margin: 0; font-size: 0.9rem; }
+  .yc__segs { display: inline-flex; gap: 0.25rem; padding: 0.25rem; border-radius: 999px; background: color-mix(in srgb, var(--c-plum) 8%, var(--c-white)); }
+  .seg {
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.4rem 0.95rem;
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+  }
+  .seg.is-on { background: var(--c-plum); color: #fff; }
+  .yc__segs--sm .seg { padding: 0.3rem 0.8rem; font-size: 0.84rem; }
+  .yc__toolbar { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; align-items: center; justify-content: space-between; margin: 1.2rem 0 0.6rem; }
+  .yc__keys { display: flex; flex-wrap: wrap; gap: 0.9rem; font-size: 0.82rem; color: var(--c-muted); }
+  .key { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .key i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .yc__chart { width: 100%; height: clamp(260px, 34vw, 360px); }
+  .yc__chart--sm { height: clamp(220px, 28vw, 300px); }
+  .yc__cap { font-size: 0.78rem; color: var(--c-muted); margin: 0.4rem 0 1.6rem; }
+  .yc__grid { display: grid; gap: var(--gap); grid-template-columns: 1fr; align-items: start; }
+  .yc__panel {
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    background: color-mix(in srgb, var(--c-gold) 12%, var(--c-white));
+  }
+  .yc__panel :global(.yc__pyear) { font-family: var(--font-title); font-size: 1.2rem; color: var(--c-plum); margin: 0 0 0.5rem; }
+  .yc__panel :global(ul) { margin: 0; padding-left: 1.1rem; font-size: 0.92rem; color: var(--c-muted); }
+  .yc__panel :global(li) { margin-bottom: 0.3rem; }
+  .yc__panel :global(.yc__pnote) { font-size: 0.78rem; color: var(--c-muted); margin: 0.7rem 0 0; }
+  @media (min-width: 900px) { .yc__grid { grid-template-columns: 1.5fr 0.9fr; } }
+</style>
+<style>
+  .yc {
+    border: 1px solid var(--c-line);
+    border-radius: calc(var(--radius) + 6px);
+    background: var(--c-white);
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: var(--shadow);
+  }
+  .yc__head { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: flex-end; }
+  .yc__title { font-size: var(--step-2); margin-bottom: 0.3rem; }
+  .yc__desc { color: var(--c-muted); max-width: 52ch; margin: 0; }
+  .yc__segs { display: inline-flex; gap: 0.25rem; padding: 0.25rem; border-radius: 999px; background: color-mix(in srgb, var(--c-plum) 8%, var(--c-white)); }
+  .seg {
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.4rem 0.95rem;
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+  }
+  .seg.is-on { background: var(--c-plum); color: #fff; }
+  .yc__segs--sm .seg { padding: 0.3rem 0.8rem; font-size: 0.84rem; }
+  .yc__toolbar { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; align-items: center; justify-content: space-between; margin: 1.2rem 0 0.6rem; }
+  .yc__keys { display: flex; flex-wrap: wrap; gap: 0.9rem; font-size: 0.82rem; color: var(--c-muted); }
+  .key { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .key i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .yc__chart { width: 100%; height: clamp(260px, 34vw, 360px); }
+  .yc__chart--sm { height: clamp(220px, 28vw, 300px); }
+  .yc__cap { font-size: 0.78rem; color: var(--c-muted); margin: 0.4rem 0 1.6rem; }
+  .yc__grid { display: grid; gap: var(--gap); grid-template-columns: 1fr; align-items: start; }
+  .yc__panel {
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    background: color-mix(in srgb, var(--c-gold) 12%, var(--c-white));
+  }
+  .yc__panel :global(.yc__pyear) { font-family: var(--font-title); font-size: 1.2rem; color: var(--c-plum); margin: 0 0 0.5rem; }
+  .yc__panel :global(ul) { margin: 0; padding-left: 1.1rem; font-size: 0.92rem; color: var(--c-muted); }
+  .yc__panel :global(li) { margin-bottom: 0.3rem; }
+  .yc__panel :global(.yc__pnote) { font-size: 0.78rem; color: var(--c-muted); margin: 0.7rem 0 0; }
+  @media (min-width: 900px) { .yc__grid { grid-template-columns: 1.5fr 0.9fr; } }
+</style>
+<style>
+  .yc {
+    border: 1px solid var(--c-line);
+    border-radius: calc(var(--radius) + 6px);
+    background: var(--c-white);
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: var(--shadow);
+  }
+  .yc__head { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: flex-end; }
+  .yc__title { font-size: var(--step-2); margin-bottom: 0.3rem; }
+  .yc__desc { color: var(--c-muted); max-width: 52ch; margin: 0; }
+  .yc__segs { display: inline-flex; gap: 0.25rem; padding: 0.25rem; border-radius: 999px; background: color-mix(in srgb, var(--c-plum) 8%, var(--c-white)); }
+  .seg {
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.4rem 0.95rem;
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+  }
+  .seg.is-on { background: var(--c-plum); color: #fff; }
+  .yc__segs--sm .seg { padding: 0.3rem 0.8rem; font-size: 0.84rem; }
+  .yc__toolbar { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; align-items: center; justify-content: space-between; margin: 1.2rem 0 0.6rem; }
+  .yc__keys { display: flex; flex-wrap: wrap; gap: 0.9rem; font-size: 0.82rem; color: var(--c-muted); }
+  .key { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .key i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .yc__chart { width: 100%; height: clamp(260px, 34vw, 360px); }
+  .yc__chart--sm { height: clamp(220px, 28vw, 300px); }
+  .yc__cap { font-size: 0.78rem; color: var(--c-muted); margin: 0.4rem 0 1.6rem; }
+  .yc__grid { display: grid; gap: var(--gap); grid-template-columns: 1fr; align-items: start; }
+  .yc__panel {
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    background: color-mix(in srgb, var(--c-gold) 12%, var(--c-white));
+  }
+  .yc__panel :global(.yc__pyear) { font-family: var(--font-title); font-size: 1.2rem; color: var(--c-plum); margin: 0 0 0.5rem; }
+  .yc__panel :global(ul) { margin: 0; padding-left: 1.1rem; font-size: 0.92rem; color: var(--c-muted); }
+  .yc__panel :global(li) { margin-bottom: 0.3rem; }
+  .yc__panel :global(.yc__pnote) { font-size: 0.78rem; color: var(--c-muted); margin: 0.7rem 0 0; }
+  @media (min-width: 900px) { .yc__grid { grid-template-columns: 1.5fr 0.9fr; } }
+</style>

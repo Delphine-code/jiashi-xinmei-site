@@ -1,0 +1,55 @@
+---
+interface Props {
+  to: number;
+  unit?: string;
+  decimals?: number;
+  duration?: number;
+}
+const { to, unit = '', decimals = 0, duration = 1200 } = Astro.props;
+---
+<span class="count" data-count data-to={String(to)} data-decimals={String(decimals)} data-duration={String(duration)}>0</span>{unit}
+
+<script>
+  function countInit() {
+    const els = document.querySelectorAll('[data-count]:not([data-count-bound])');
+    if (!els.length) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const run = (el) => {
+      const to = parseFloat(el.dataset.to || '0');
+      const decimals = parseInt(el.dataset.decimals || '0', 10);
+      const duration = parseInt(el.dataset.duration || '1200', 10);
+      if (reduce) { el.textContent = to.toFixed(decimals); return; }
+      const start = performance.now();
+      const tick = (now) => {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = (to * eased).toFixed(decimals);
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = to.toFixed(decimals);
+      };
+      requestAnimationFrame(tick);
+    };
+    if (!('IntersectionObserver' in window)) { els.forEach((el) => { el.dataset.countBound = '1'; run(el); }); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.dataset.countBound = '1';
+          run(en.target);
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    els.forEach((el) => io.observe(el));
+  }
+  document.addEventListener('astro:page-load', countInit);
+  if (document.readyState !== 'loading') countInit();
+  else document.addEventListener('DOMContentLoaded', countInit);
+</script>
+
+<style>
+  .count {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+</style>

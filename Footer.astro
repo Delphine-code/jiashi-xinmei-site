@@ -1,0 +1,43 @@
+---
+import siteData from '../data/site-data.json';
+const nav = siteData.nav;
+---
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__brand"><span aria-hidden="true">●</span> 伽师新梅</p>
+      <p class="muted">戈壁绿洲上的紫色黄金</p>
+    </div>
+    <nav aria-label="页脚导航">
+      <ul class="foot__links">
+        {nav.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
+      </ul>
+    </nav>
+    <div>
+      <p class="muted">从开屏地图进入，也可以随时<a href="/entry">回到地图</a>重新选择。</p>
+      <p class="muted">数据来源与授权信息见<a href="/about">关于与来源</a>页。</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    margin-top: var(--section-y);
+    padding-block: 3rem 2.5rem;
+    background: var(--c-plum-deep);
+    color: color-mix(in srgb, var(--c-mist) 78%, transparent);
+    font-size: 0.92rem;
+  }
+  .foot__grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .foot__brand {
+    font-family: var(--font-title);
+    font-size: 1.3rem;
+    color: var(--c-mist);
+    margin-bottom: 0.3rem;
+  }
+  .foot__brand span { color: var(--c-gold); font-size: 0.75em; vertical-align: 0.12em; }
+  .foot__links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; }
+  .foot a { color: var(--c-gold-soft); text-decoration: none; }
+  .foot a:hover, .foot a:focus-visible { color: #fff; text-decoration: underline; }
+  .foot .muted { color: color-mix(in srgb, var(--c-mist) 62%, transparent); }
+</style>

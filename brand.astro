@@ -1,0 +1,519 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import FigureBlock from '../components/FigureBlock.astro';
+import siteData from '../data/site-data.json';
+
+const b = siteData.brand;
+const { photos } = siteData;
+const conceptItems = [
+  {
+    name: '加工品包装',
+    tag: '包装系统',
+    desc: '以果紫为主识别色，让西梅精酿、奶啤、果酱与西梅干形成统一的产品家族。'
+  },
+  {
+    name: '电商详情页',
+    tag: '数字应用',
+    desc: '沿着“产地—品类—风味—规格”的顺序组织信息，让包装内容更容易被读懂。'
+  }
+];
+const productConcepts = [
+  { src: '/assets/brand/concept-juice.jpg', alt: '伽师新梅西梅汁瓶装包装设计', name: '西梅汁 · 瓶装', tag: '包装设计', desc: '以果紫为主色，将品名、梅梅与果实信息收束在瓶贴之中，形成明确的正面识别。' },
+  { src: '/assets/brand/concept-jam.webp', alt: '伽师新梅西梅果酱包装设计', name: '西梅果酱', tag: '包装设计', desc: '以瓶贴为视觉中心，将梅梅、果实与装饰纹样组织成完整的加工品包装。' },
+  { src: '/assets/brand/concept-dried.webp', alt: '伽师新梅西梅干包装设计', name: '西梅干', tag: '包装设计', desc: '用更明快的果实图形突出品名与品类，让西梅干在货架上快速被认出。' },
+  { src: '/assets/brand/concept-plush.webp', alt: '梅梅毛绒玩偶设计', name: '梅梅毛绒玩偶', tag: 'IP 周边设计', desc: '保留帽饰、叶片与腮红等识别细节，让梅梅从包装形象延展为可亲近的实体周边。' },
+  { src: '/assets/brand/concept-keychain.webp', alt: '梅梅挂件设计', name: '梅梅挂件', tag: 'IP 周边设计', desc: '将梅梅形象转化为轻量化挂件，让伽师新梅成为可以随身携带的记忆。' }
+];
+const realProducts = [
+  {
+    src: '/assets/brand/product-pouch.jpg',
+    alt: '伽师新梅西梅汁袋装包装设计',
+    name: '西梅汁 · 袋装',
+    tag: '包装设计',
+    desc: '以大面积果紫和梅梅形象建立视觉中心，袋面清楚保留品名、规格与风味信息。'
+  },
+  {
+    src: '/assets/brand/product-can-purple.jpg',
+    alt: '伽师新梅西梅精酿罐装包装设计',
+    name: '西梅精酿 · 紫色罐',
+    tag: '包装设计',
+    desc: '紫色罐体强化品类识别，银色罐口与水珠质感形成冷感对比，呈现西梅精酿的清爽气质。'
+  },
+  {
+    src: '/assets/brand/product-can-cream.jpg',
+    alt: '伽师新梅西梅奶啤罐装包装设计',
+    name: '西梅奶啤 · 奶油罐',
+    tag: '包装设计',
+    desc: '奶油白降低果紫的视觉浓度，梅梅、花朵与叶片共同构成柔和、轻盈的风味包装。'
+  }
+];
+const galleryItems = [
+  { ...realProducts[0], kind: '包装设计' },
+  { ...productConcepts[0], kind: '包装设计' },
+  { ...realProducts[2], kind: '包装设计' },
+  { ...realProducts[1], kind: '包装设计' },
+  ...productConcepts.slice(1, 3).map((item) => ({ ...item, kind: '包装设计' })),
+  ...productConcepts.slice(3).map((item) => ({ ...item, kind: 'IP 周边' }))
+];
+---
+
+  <BaseLayout title="文创与品牌 · 伽师新梅" description="伽师新梅的 IP 形象、包装设计、衍生周边与设计逻辑：色板、字体、纹样来源与 AIGC 使用说明。" theme="craft">
+  <PageHero
+    kicker="P6 / 文创"
+    title="从梅梅，到一套品牌"
+    lead="从一颗新梅，延展出一套可识别、可应用的品牌语言。"
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="01" title="先让梅梅成为记忆点" />
+      <article class="br__ip" data-reveal>
+        <img class="br__zoomable" src="/assets/meimei-map.png" alt="梅梅·伽师新梅品牌形象" data-lightbox-src="/assets/meimei-map.png" data-lightbox-alt="梅梅·伽师新梅品牌形象" data-lightbox-caption="主视觉 IP · 梅梅" tabindex="0" role="button" aria-label="放大查看：梅梅·伽师新梅品牌形象" />
+        <div class="br__ip-copy">
+          <p class="eyebrow">主视觉 IP</p>
+          <h3>梅梅</h3>
+          <p>以成熟新梅的圆润果形为原型，保留紫色果实、叶片与帽饰三个识别点，让梅梅成为伽师新梅最直观的品牌记忆。</p>
+          <span class="tag">品牌形象</span>
+        </div>
+      </article>
+      <figure class="br__scene" data-reveal>
+        <img class="br__zoomable" src="/assets/brand/ip-scene.jpg" alt="伽师新梅礼盒包装设计" data-lightbox-src="/assets/brand/ip-scene.jpg" data-lightbox-alt="伽师新梅礼盒包装设计" data-lightbox-caption="礼盒包装 · 伽乡梅盛" tabindex="0" role="button" aria-label="放大查看：伽师新梅礼盒包装设计" />
+        <figcaption>礼盒包装 · 伽乡梅盛</figcaption>
+        <p class="br__scene-note"><strong>“伽乡梅盛”</strong>将“家乡美盛”与“伽师新梅”融合，表达家乡物产丰盛、生活美好的愿景。画面把新梅枝叶、果实与伽师地域建筑放在同一场景中，让果园记忆延伸到家乡街巷；果紫、叶绿与暖金色共同营造地域感。正面的“伽乡梅盛”采用艺术字设计，将书法笔触与装饰结构结合，使名称本身成为礼盒的核心视觉。</p>
+      </figure>
+      <div class="grid br__items">
+        {conceptItems.map((it) => (
+          <article class="br__item" data-reveal>
+            <div class="card__top">
+              <h3 class="br__name">{it.name}</h3>
+              <span class="tag">{it.tag}</span>
+            </div>
+            <p class="br__desc">{it.desc}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="02" title="六组包装，两个周边" sub="包装负责讲清产品，周边负责延续梅梅；一套视觉语言，覆盖从礼盒到日常的不同触点。" />
+      <div class="br__gallery">
+        {galleryItems.map((item, index) => (
+          <article class="br__gallery-card" data-reveal>
+            <div class="br__gallery-media">
+              <img class="br__zoomable" src={item.src} alt={item.alt} data-lightbox-src={item.src} data-lightbox-alt={item.alt} data-lightbox-caption={item.name} tabindex="0" role="button" aria-label={`放大查看：${item.name}`} />
+              <span class="br__gallery-index">{String(index + 1).padStart(2, '0')}</span>
+              <span class="br__gallery-kind">{item.kind}</span>
+            </div>
+            <div class="br__gallery-copy">
+              <div class="card__top">
+                <h3>{item.name}</h3>
+                <span class="tag">{item.tag}</span>
+              </div>
+              <p>{item.desc}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="03" title="三种颜色，认出伽师" sub="果紫、沙金与叶绿，构成品牌的基础识别系统。" />
+      <div class="br__principles">
+        <p><strong>果紫</strong>对应成熟果实，承担产品的第一识别。</p>
+        <p><strong>沙金</strong>连接戈壁日照与收获，增加礼赠质感。</p>
+        <p><strong>叶绿</strong>指向果园与生长，提示自然来源。</p>
+      </div>
+      <div class="br__palette" aria-label="品牌色板">
+        <div class="br__swatch br__swatch--plum"><strong>果紫</strong><span>#6B344D</span></div>
+        <div class="br__swatch br__swatch--gold"><strong>沙金</strong><span>#B58A45</span></div>
+        <div class="br__swatch br__swatch--leaf"><strong>叶绿</strong><span>#8BA56B</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="04" title="2026 中国新梅行业大会 · 产品展示" sub="记录大会现场已经亮相的新梅产品，从果干、复合汁到果蔬加工品，看到一颗果如何进入日常。" />
+      <div class="grid">
+        {photos.brand.map((ph) => (
+          <FigureBlock src={ph.src} alt={ph.alt} caption={ph.caption} credit={ph.credit} ratio={ph.ratio || '3 / 4'} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="br__lightbox" data-brand-lightbox hidden role="dialog" aria-modal="true" aria-label="设计图片预览">
+    <button class="br__lightbox-exit" type="button" data-lightbox-exit aria-label="退出图片预览"><span aria-hidden="true">←</span> 退出预览</button>
+    <button class="br__lightbox-prev" type="button" data-lightbox-prev aria-label="上一张图片">‹</button>
+    <figure class="br__lightbox-content">
+      <img data-lightbox-image alt="" />
+      <figcaption data-lightbox-caption-view></figcaption>
+    </figure>
+    <button class="br__lightbox-next" type="button" data-lightbox-next aria-label="下一张图片">›</button>
+    <p class="br__lightbox-zoom" data-lightbox-zoom>100%</p>
+    <p class="br__lightbox-hint">滚动缩放 · 按住拖动 · 点击背景关闭 · ← → 切换</p>
+  </div>
+
+  </BaseLayout>
+
+<script>
+  function brandLightboxInit() {
+    const lightbox = document.querySelector('[data-brand-lightbox]');
+    if (!lightbox || lightbox.dataset.bound === '1') return;
+    document.body.appendChild(lightbox);
+    const sources = [...document.querySelectorAll('[data-lightbox-src]')];
+    const image = lightbox.querySelector('[data-lightbox-image]');
+    const caption = lightbox.querySelector('[data-lightbox-caption-view]');
+    const zoomLabel = lightbox.querySelector('[data-lightbox-zoom]');
+    let activeIndex = 0;
+    let zoom = 1;
+    let panX = 0;
+    let panY = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let startPanX = 0;
+    let startPanY = 0;
+    lightbox.dataset.bound = '1';
+
+    const updateZoom = () => {
+      image.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+      image.classList.toggle('is-zoomed', zoom > 1);
+      zoomLabel.textContent = `${Math.round(zoom * 100)}%`;
+    };
+    const resetZoom = () => {
+      zoom = 1;
+      panX = 0;
+      panY = 0;
+      isDragging = false;
+      image.classList.remove('is-dragging');
+      updateZoom();
+    };
+    const render = (index) => {
+      activeIndex = (index + sources.length) % sources.length;
+      const source = sources[activeIndex];
+      image.src = source.dataset.lightboxSrc;
+      image.alt = source.dataset.lightboxAlt || '';
+      caption.textContent = `${String(activeIndex + 1).padStart(2, '0')}  ·  ${source.dataset.lightboxCaption || image.alt}`;
+      resetZoom();
+    };
+    const close = () => {
+      lightbox.hidden = true;
+      document.body.classList.remove('brand-lightbox-open');
+      resetZoom();
+    };
+    const open = (event) => {
+      activeIndex = sources.indexOf(event.currentTarget);
+      render(activeIndex);
+      lightbox.hidden = false;
+      document.body.classList.add('brand-lightbox-open');
+    };
+    sources.forEach((source) => {
+      source.addEventListener('click', open);
+      source.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open({ currentTarget: source });
+        }
+      });
+    });
+    lightbox.querySelector('[data-lightbox-exit]').addEventListener('click', close);
+    lightbox.querySelector('[data-lightbox-prev]').addEventListener('click', () => render(activeIndex - 1));
+    lightbox.querySelector('[data-lightbox-next]').addEventListener('click', () => render(activeIndex + 1));
+    lightbox.addEventListener('wheel', (event) => {
+      if (lightbox.hidden) return;
+      event.preventDefault();
+      zoom = Math.min(3, Math.max(1, zoom + (event.deltaY < 0 ? 0.15 : -0.15)));
+      if (zoom === 1) {
+        panX = 0;
+        panY = 0;
+      }
+      updateZoom();
+    }, { passive: false });
+    image.addEventListener('pointerdown', (event) => {
+      if (zoom <= 1) return;
+      event.preventDefault();
+      isDragging = true;
+      dragStartX = event.clientX;
+      dragStartY = event.clientY;
+      startPanX = panX;
+      startPanY = panY;
+      image.setPointerCapture(event.pointerId);
+      image.classList.add('is-dragging');
+    });
+    image.addEventListener('pointermove', (event) => {
+      if (!isDragging) return;
+      panX = startPanX + event.clientX - dragStartX;
+      panY = startPanY + event.clientY - dragStartY;
+      updateZoom();
+    });
+    const stopDragging = (event) => {
+      if (!isDragging) return;
+      isDragging = false;
+      image.classList.remove('is-dragging');
+      if (image.hasPointerCapture(event.pointerId)) image.releasePointerCapture(event.pointerId);
+    };
+    image.addEventListener('pointerup', stopDragging);
+    image.addEventListener('pointercancel', stopDragging);
+    lightbox.addEventListener('click', (event) => { if (event.target === lightbox) close(); });
+    document.addEventListener('keydown', (event) => {
+      if (lightbox.hidden) return;
+      if (event.key === 'Escape') close();
+      if (event.key === 'ArrowLeft') render(activeIndex - 1);
+      if (event.key === 'ArrowRight') render(activeIndex + 1);
+    });
+  }
+  document.addEventListener('astro:page-load', brandLightboxInit);
+  if (document.readyState !== 'loading') brandLightboxInit();
+  else document.addEventListener('DOMContentLoaded', brandLightboxInit);
+</script>
+
+<style>
+  .br__item {
+    padding: 1.3rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+  }
+  .br__ip {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.36fr) 1fr;
+    gap: clamp(1rem, 0.5rem + 2vw, 2rem);
+    align-items: center;
+    margin: 0 0 1.5rem;
+    padding: clamp(1rem, 0.7rem + 2vw, 1.8rem);
+    border: 1px solid color-mix(in srgb, var(--c-gold) 42%, var(--c-line));
+    border-radius: var(--radius);
+    background: linear-gradient(125deg, #eee2d7, #f7f1e9);
+  }
+  .br__ip img {
+    width: min(100%, 220px);
+    height: auto;
+    margin: 0 auto;
+    filter: drop-shadow(0 16px 18px rgba(58, 27, 71, 0.2));
+  }
+  .br__zoomable { cursor: zoom-in; }
+  .br__zoomable:focus-visible { outline: 3px solid var(--c-gold); outline-offset: 4px; }
+  .br__lightbox[hidden] { display: none; }
+  .br__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: clamp(3.5rem, 8vh, 5.5rem) clamp(3.5rem, 9vw, 9rem) 4rem;
+    background: rgb(40 24 42 / 68%);
+    backdrop-filter: blur(12px);
+    cursor: zoom-out;
+  }
+  .br__lightbox-content {
+    display: grid;
+    gap: 0.75rem;
+    width: min(82vw, 980px);
+    height: min(78vh, 760px);
+    margin: 0;
+    place-items: center;
+    cursor: default;
+  }
+  .br__lightbox-content img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: contain;
+    filter: drop-shadow(0 24px 34px rgb(25 11 29 / 32%));
+    transform-origin: center;
+    transition: transform 0.16s ease-out;
+    cursor: zoom-in;
+    touch-action: none;
+    user-select: none;
+  }
+  .br__lightbox-content img.is-zoomed { cursor: zoom-out; }
+  .br__lightbox-content img.is-dragging { cursor: grabbing; transition: none; }
+  .br__lightbox-content figcaption {
+    color: var(--c-white);
+    font-family: var(--font-title);
+    font-size: clamp(0.9rem, 0.8rem + 0.25vw, 1.1rem);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .br__lightbox-close,
+  .br__lightbox-exit,
+  .br__lightbox-prev,
+  .br__lightbox-next {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 52%);
+    color: var(--c-white);
+    background: rgb(255 255 255 / 12%);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .br__lightbox-close:hover,
+  .br__lightbox-exit:hover,
+  .br__lightbox-prev:hover,
+  .br__lightbox-next:hover,
+  .br__lightbox-close:focus-visible,
+  .br__lightbox-exit:focus-visible,
+  .br__lightbox-prev:focus-visible,
+  .br__lightbox-next:focus-visible { background: rgb(255 255 255 / 25%); }
+  .br__lightbox-exit {
+    top: 1.3rem;
+    left: 1.4rem;
+    min-height: 2.5rem;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+  }
+  .br__lightbox-exit span { margin-right: 0.25rem; font-size: 1.1rem; }
+  .br__lightbox-close {
+    top: 1.3rem;
+    right: 1.4rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-size: 1.65rem;
+    line-height: 1;
+  }
+  .br__lightbox-prev,
+  .br__lightbox-next {
+    top: 50%;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    font-size: 2.3rem;
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+  .br__lightbox-prev { left: 1.3rem; }
+  .br__lightbox-next { right: 1.3rem; }
+  .br__lightbox-prev:hover,
+  .br__lightbox-next:hover { transform: translateY(-50%) scale(1.06); }
+  .br__lightbox-hint {
+    position: absolute;
+    bottom: 1.25rem;
+    margin: 0;
+    color: rgb(255 255 255 / 72%);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+  .br__lightbox-zoom {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.25rem;
+    margin: 0;
+    min-width: 3.4rem;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid rgb(255 255 255 / 38%);
+    border-radius: 999px;
+    color: var(--c-white);
+    background: rgb(255 255 255 / 12%);
+    font: 0.72rem var(--font-num);
+    text-align: center;
+  }
+  .brand-lightbox-open { overflow: hidden; }
+  .brand-lightbox-open .nav { z-index: 0; }
+  .br__ip-copy { max-width: 42rem; }
+  .br__ip-copy h3 { margin: 0 0 0.4rem; color: var(--c-plum); font-size: var(--step-2); }
+  .br__ip-copy p:not(.eyebrow) { margin: 0 0 0.8rem; color: var(--c-muted); }
+  .br__scene { margin: 0 0 1.5rem; }
+  .br__scene img { display: block; width: 100%; height: auto; object-fit: contain; border-radius: var(--radius); border: 1px solid var(--c-line); }
+  .br__scene figcaption { margin-top: 0.6rem; font-size: 0.85rem; color: var(--c-muted); }
+  .br__scene-note {
+    max-width: 58rem;
+    margin: 0.65rem 0 0;
+    padding: 0.85rem 1rem;
+    border-left: 3px solid var(--c-gold);
+    background: color-mix(in srgb, var(--c-gold) 8%, var(--c-white));
+    color: var(--c-muted);
+    font-size: 0.92rem;
+    line-height: 1.8;
+  }
+  .br__scene-note strong { color: var(--c-plum); font-family: var(--font-title); }
+  .br__name { font-size: var(--step-1); margin: 0; color: var(--c-plum); }
+  .br__desc { margin: 0.5rem 0 0; font-size: 0.92rem; color: var(--c-muted); }
+  .br__principles { display: grid; grid-template-columns: 1fr; gap: 0.7rem; max-width: 760px; }
+  .br__principles p { margin: 0; padding: 0.9rem 1rem; border-left: 3px solid var(--c-gold); background: var(--c-white); color: var(--c-muted); }
+  .br__principles strong { color: var(--c-plum); margin-right: 0.5rem; }
+  .br__palette { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; max-width: 760px; margin-top: 1.2rem; }
+  .br__swatch { min-height: 92px; padding: 0.8rem; display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--radius); color: #fff; }
+  .br__swatch strong { font-family: var(--font-title); }
+  .br__swatch span { font: 0.7rem var(--font-num); opacity: 0.78; letter-spacing: 0.08em; }
+  .br__swatch--plum { background: #6b344d; }
+  .br__swatch--gold { background: #b58a45; color: #30252b; }
+  .br__swatch--leaf { background: #8ba56b; color: #25372b; }
+  .br__gallery {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1.2rem);
+  }
+  .br__gallery-card {
+    display: grid;
+    grid-template-rows: 220px auto;
+    overflow: hidden;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    background: var(--c-white);
+    box-shadow: 0 14px 30px -26px rgba(48, 37, 43, 0.65);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  }
+  .br__gallery-card:hover { transform: translateY(-4px); box-shadow: 0 20px 36px -24px rgba(48, 37, 43, 0.6); }
+  .br__gallery-media {
+    position: relative;
+    overflow: hidden;
+    background: #f7f5ef;
+  }
+  .br__gallery-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0.65rem;
+    object-position: center;
+  }
+  .br__gallery-card:nth-child(-n + 3) .br__gallery-media { background: #fbf8e9; }
+  .br__gallery-index {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    display: grid;
+    place-items: center;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--c-plum);
+    font: 0.72rem var(--font-num);
+  }
+  .br__gallery-kind { position: absolute; right: 0.7rem; top: 0.7rem; padding: 0.18rem 0.45rem; border-radius: 999px; background: rgba(255,255,255,0.82); color: var(--c-muted); font-size: 0.68rem; }
+  .br__gallery-copy { padding: 0.8rem 0.85rem 0.9rem; }
+  .br__gallery-copy h3 { margin: 0; color: var(--c-plum); font-size: 1rem; }
+  .br__gallery-copy p { margin: 0.42rem 0 0; color: var(--c-muted); font-size: 0.78rem; line-height: 1.55; }
+  @media (max-width: 620px) {
+    .br__ip { grid-template-columns: 1fr; text-align: center; }
+    .br__ip-copy { margin: 0 auto; }
+  }
+  @media (max-width: 520px) { .br__palette { grid-template-columns: 1fr; } .br__swatch { min-height: 64px; } }
+  @media (max-width: 820px) {
+    .br__gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 520px) {
+    .br__gallery { grid-template-columns: 1fr; }
+    .br__gallery-card { grid-template-rows: minmax(250px, 1fr) auto; }
+    .br__lightbox { padding-inline: 2.8rem; }
+    .br__lightbox-content { width: 86vw; height: 72vh; }
+    .br__lightbox-prev,
+    .br__lightbox-next { width: 2.35rem; height: 2.35rem; font-size: 1.8rem; }
+    .br__lightbox-prev { left: 0.35rem; }
+    .br__lightbox-next { right: 0.35rem; }
+    .br__lightbox-exit { top: 1rem; left: 0.8rem; min-height: 2.25rem; padding-inline: 0.65rem; }
+    .br__lightbox-close { top: 1rem; right: 0.8rem; width: 2.25rem; height: 2.25rem; }
+  }
+</style>

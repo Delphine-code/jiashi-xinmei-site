@@ -1,0 +1,70 @@
+---
+import siteData from '../data/site-data.json';
+const ch = siteData.chain;
+const flow = [
+  { no: '01', name: '种植', num: '13 支服务队', extra: '1178 名技术员下沉田间' },
+  { no: '02', name: '采摘分选', num: '12 条', extra: '智能分选线' },
+  { no: '03', name: '冷藏', num: '50 万吨', extra: '三级冷链库容' },
+  { no: '04', name: '加工', num: '22 种', extra: '深加工产品' },
+  { no: '05', name: '销售流通', num: '11 个', extra: '全国交易市场' }
+];
+---
+<ol class="cf" data-reveal>
+  {flow.map((f) => (
+    <li class="cf__node">
+      <span class="cf__no" aria-hidden="true">{f.no}</span>
+      <h3 class="cf__name">{f.name}</h3>
+      <p class="cf__num">{f.num}<span class="cf__extra">{f.extra}</span></p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .cf {
+    list-style: none;
+    margin: 0 0 1.6rem;
+    padding: 0;
+    display: grid;
+    gap: 1rem 0.5rem;
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .cf__node {
+    position: relative;
+    text-align: center;
+    padding: 0.9rem 0.5rem 1rem;
+    border-radius: 4px;
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+    border-top: 3px solid var(--c-plum);
+  }
+  .cf__node:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -0.55rem;
+    width: 0.9rem;
+    height: 2px;
+    background: color-mix(in srgb, var(--c-gold) 60%, var(--c-line));
+    transform: translateY(-50%);
+  }
+  .cf__node:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -0.72rem;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--c-gold);
+    border-bottom: 2px solid var(--c-gold);
+    transform: translateY(-50%) rotate(-45deg);
+  }
+  .cf__no { font-family: var(--font-num); font-size: 0.74rem; letter-spacing: 0.08em; color: var(--c-gold); }
+  .cf__name { font-size: 0.98rem; color: var(--c-plum); margin: 0.25rem 0 0.35rem; }
+  .cf__num { margin: 0; font-family: var(--font-num); font-size: 1.15rem; color: var(--c-plum); line-height: 1.2; }
+  .cf__extra { display: block; font-family: var(--font-body); font-size: 0.72rem; color: var(--c-muted); font-weight: 400; margin-top: 0.2rem; }
+  @media (max-width: 860px) {
+    .cf { grid-template-columns: repeat(2, 1fr); }
+    .cf__node:not(:last-child)::before, .cf__node:not(:last-child)::after { display: none; }
+  }
+  @media (max-width: 460px) { .cf { grid-template-columns: 1fr; } }
+</style>

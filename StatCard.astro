@@ -1,0 +1,45 @@
+---
+interface Props {
+  value: string | number;
+  unit?: string;
+  label: string;
+  src?: string;
+  note?: string;
+}
+import SourceBadge from './SourceBadge.astro';
+import StatCounter from './StatCounter.astro';
+const { value, unit, label, src, note } = Astro.props;
+const numeric = typeof value === 'number' || /^[0-9.]+$/.test(String(value));
+const decimals = String(value).includes('.') ? String(value).split('.')[1].length : 0;
+---
+<article class="stat" data-reveal>
+  <p class="stat__value">
+    {numeric
+      ? <StatCounter to={Number(value)} unit={unit} decimals={decimals} />
+      : <><span class="stat__raw">{value}</span>{unit}</>}
+  </p>
+  <p class="stat__label">{label}{src && <SourceBadge src={src} />}</p>
+  {note && <p class="stat__note">{note}</p>}
+</article>
+
+<style>
+  .stat {
+    padding: 1.25rem 1.35rem;
+    border-radius: var(--radius);
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+    box-shadow: 0 10px 24px -26px rgba(48, 37, 43, 0.8);
+    border-top: 3px solid var(--c-gold);
+  }
+  .stat__value {
+    font-family: var(--font-num);
+    font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem);
+    line-height: 1.1;
+    color: var(--c-plum);
+    margin: 0 0 0.25rem;
+  }
+  .stat__value > :global(span.count) { font-size: inherit; }
+  .stat__raw { font-family: inherit; }
+  .stat__label { margin: 0; font-size: 0.94rem; color: var(--c-muted); display: flex; align-items: center; gap: 0.25rem; }
+  .stat__note { margin: 0.4rem 0 0; font-size: 0.82rem; color: color-mix(in srgb, var(--c-muted) 80%, transparent); }
+</style>

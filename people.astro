@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import PersonCard from '../components/PersonCard.astro';
+import FigureBlock from '../components/FigureBlock.astro';
+import siteData from '../data/site-data.json';
+
+const people = siteData.people;
+const { photos } = siteData;
+---
+
+  <BaseLayout title="新梅人 · 伽师新梅" description="种植大户、镇长、电商创业者、援疆干部与技术专家：伽师新梅产业背后的六个人。" theme="warm">
+  <PageHero
+    kicker="P5 / 人物"
+    title="新梅人"
+    lead="一颗新梅从枝头走向市场，要经过许多双手。六位新梅人，分别站在种植、组织、技术与流通的现场。"
+    src="S3"
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="01" title="六个人，接住一颗果" sub="从盐碱地里的第一棵树，到冷链车上的最后一箱果。" />
+      <div class="pp__grid">
+        {people.map((p, index) => (
+          <PersonCard
+            name={p.name}
+            role={p.role}
+            roleLabel={["种植者", "组织者", "经营者", "援疆者", "科研者", "流通者"][index]}
+            quote={p.quote}
+            story={p.story}
+            src={p.src}
+          />
+        ))}
+      </div>
+      <p class="pp__instruction">点击卡片，翻看人物故事。</p>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="02" title="把故事放回现场" sub="果园与采摘季，人物故事发生的地方。" />
+      <div class="grid grid--2">
+        {photos.people.map((ph) => (
+          <FigureBlock src={ph.src} alt={ph.alt} caption={ph.caption} credit={ph.credit} ratio={ph.ratio} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  </BaseLayout>
+
+<style>
+  .pp__grid { display: grid; gap: clamp(1rem, 1.8vw, 1.5rem); grid-template-columns: 1fr; }
+  .pp__note2 { margin-top: 1rem; max-width: 72ch; }
+  .pp__instruction { margin: 0.8rem 0 0; color: var(--c-plum); font-size: 0.8rem; letter-spacing: 0.04em; }
+  .pp__sources { margin-top: 1.35rem; border-top: 1px solid var(--c-line); padding-top: 0.8rem; }
+  .pp__sources summary { color: var(--c-plum); cursor: pointer; font-size: 0.82rem; }
+  .pp__sources summary::marker { color: var(--c-gold); }
+  @media (min-width: 880px) {
+    .pp__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

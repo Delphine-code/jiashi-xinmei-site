@@ -1,0 +1,150 @@
+---
+import siteData from '../data/site-data.json';
+import SourceBadge from './SourceBadge.astro';
+const cmp = siteData.science.compare;
+const targets = cmp.targets;
+---
+
+<section class="rc" data-radar data-cfg={JSON.stringify(cmp)} data-reveal>
+  <header class="rc__head">
+    <p class="rc__desc">
+      选择对比对象，雷达图实时叠加；伽师新梅作为基准线始终在场。
+      <SourceBadge src={cmp.src} />
+    </p>
+  </header>
+
+  <div class="rc__segs" role="group" aria-label="选择对比对象">
+    {targets.map((t, i) => (
+      <button type="button" class="rc__seg" data-target={t.key} data-i={String(i)}>{t.name}</button>
+    ))}
+  </div>
+
+  <div class="rc__grid">
+    <div class="rc__chart" data-radar-chart></div>
+    <aside class="rc__panel">
+      <p class="rc__legend"><span class="rc__dot rc__dot--self"></span>{cmp.self.name}（基准）</p>
+      <p class="rc__legend"><span class="rc__dot rc__dot--other"></span><span data-radar-name>—</span></p>
+      <ul class="rc__dims">
+        {cmp.dims.map((d) => (<li><span>{d.name}</span><b data-dim-cell={d.key}>—</b></li>))}
+      </ul>
+      <p class="rc__note">{cmp.note}</p>
+    </aside>
+  </div>
+</section>
+
+<script>
+  function radarInit() {
+    const root = document.querySelector('[data-radar]');
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+    let cmp;
+    try { cmp = JSON.parse(root.dataset.cfg); } catch (e) { return; }
+    const el = root.querySelector('[data-radar-chart]');
+    const nameEl = root.querySelector('[data-radar-name]');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cur = 0;
+
+    import('echarts').then((mod) => {
+      const echarts = mod.default || mod;
+      const chart = echarts.getInstanceByDom(el) || echarts.init(el);
+      window.addEventListener('resize', () => chart.resize());
+
+      const indicators = cmp.dims.map((d) => ({ name: d.name, max: 100 }));
+      const selfData = cmp.dims.map((d) => cmp.self.scores[d.key]);
+
+      const render = () => {
+        const t = cmp.targets[cur];
+        const otherData = cmp.dims.map((d) => t.scores[d.key]);
+        chart.setOption({
+          tooltip: {},
+          legend: { bottom: 0, icon: 'circle', textStyle: { color: '#6e6962', fontSize: 11 } },
+          radar: {
+            indicator: indicators,
+            radius: '64%',
+            center: ['50%', '47%'],
+            axisName: { color: '#6e6962', fontSize: 12 },
+            splitLine: { lineStyle: { color: '#e9e2d6' } },
+            splitArea: { areaStyle: { color: ['#fffdfa', '#f8f3ea'] } },
+            axisLine: { lineStyle: { color: '#e9e2d6' } }
+          },
+          series: [{
+            type: 'radar',
+            symbolSize: 6,
+            data: [
+              {
+                value: selfData,
+                name: cmp.self.name,
+                lineStyle: { color: '#6b344d', width: 3 },
+                itemStyle: { color: '#6b344d' },
+                areaStyle: { color: 'rgba(107,52,77,0.16)' }
+              },
+              {
+                value: otherData,
+                name: t.name,
+                lineStyle: { color: '#b58a45', width: 3, type: 'dashed' },
+                itemStyle: { color: '#b58a45' },
+                areaStyle: { color: 'rgba(181,138,69,0.14)' }
+              }
+            ]
+          }],
+          animationDuration: reduce ? 0 : 600
+        });
+        if (nameEl) nameEl.textContent = t.name;
+        cmp.dims.forEach((d) => {
+          const cell = root.querySelector('[data-dim-cell="' + d.key + '"]');
+          if (cell) cell.textContent = cmp.self.scores[d.key] + ' : ' + t.scores[d.key];
+        });
+        root.querySelectorAll('[data-target]').forEach((b, i) => b.classList.toggle('is-on', i === cur));
+      };
+
+      root.querySelectorAll('[data-target]').forEach((b) => {
+        b.addEventListener('click', () => { cur = parseInt(b.dataset.i, 10); render(); });
+      });
+
+      render();
+    }).catch(() => {
+      el.innerHTML = '<p style="padding:1rem;color:#6e6962">图表库加载失败，请检查网络后刷新。</p>';
+    });
+  }
+
+  document.addEventListener('astro:page-load', radarInit);
+  if (document.readyState !== 'loading') radarInit();
+  else document.addEventListener('DOMContentLoaded', radarInit);
+</script>
+
+<style>
+  .rc {
+    border: 1px solid var(--c-line);
+    border-radius: calc(var(--radius) + 6px);
+    background: var(--c-white);
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: var(--shadow);
+  }
+  .rc__desc { color: var(--c-muted); max-width: 60ch; margin: 0 0 1rem; font-size: 0.9rem; }
+  .rc__segs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.2rem; }
+  .rc__seg {
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    border-radius: 3px;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--c-muted);
+    transition: all 0.2s var(--ease);
+  }
+  .rc__seg:hover { border-color: var(--c-gold); color: var(--c-plum); }
+  .rc__seg.is-on { background: var(--c-plum); border-color: var(--c-plum); color: #fff; }
+  .rc__grid { display: grid; gap: var(--gap); grid-template-columns: 1fr; align-items: center; }
+  .rc__chart { width: 100%; height: clamp(300px, 44vw, 420px); }
+  .rc__panel { border: 1px solid var(--c-line); border-radius: 4px; padding: 1.1rem 1.3rem; background: color-mix(in srgb, var(--c-gold) 10%, var(--c-white)); }
+  .rc__legend { display: flex; align-items: center; gap: 0.45rem; margin: 0 0 0.4rem; font-size: 0.9rem; color: var(--c-plum); }
+  .rc__dot { width: 11px; height: 11px; border-radius: 50%; }
+  .rc__dot--self { background: #6b344d; }
+  .rc__dot--other { background: #b58a45; }
+  .rc__dims { list-style: none; margin: 0.8rem 0 0; padding: 0; font-size: 0.88rem; }
+  .rc__dims li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--c-line); color: var(--c-muted); }
+  .rc__dims b { font-family: var(--font-num); color: var(--c-plum); font-weight: 600; }
+  .rc__note { margin: 0.9rem 0 0; font-size: 0.78rem; color: var(--c-muted); }
+  @media (min-width: 860px) { .rc__grid { grid-template-columns: 1.3fr 1fr; } }
+</style>

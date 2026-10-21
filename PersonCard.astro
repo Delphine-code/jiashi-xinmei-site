@@ -1,0 +1,129 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  roleLabel?: string;
+  quote: string;
+  story: string;
+  src?: string;
+}
+import SourceBadge from './SourceBadge.astro';
+const { name, role, roleLabel, quote, story, src } = Astro.props;
+---
+
+<article class="pc" data-person data-reveal>
+  <button class="pc__flip" type="button" data-flip aria-label={"展开 " + name + " 的故事"}>
+    <span class="pc__inner">
+      <span class="pc__face pc__front">
+        <span class="pc__avatar" aria-hidden="true">{name.slice(0, 1)}</span>
+        <span class="pc__name">{name}</span>
+        {roleLabel && <span class="pc__label">{roleLabel}</span>}
+        <span class="pc__role">{role}</span>
+        <span class="pc__quote">「{quote}」</span>
+        <span class="pc__hint">点击展开故事</span>
+      </span>
+      <span class="pc__face pc__back">
+        <span class="pc__backname">{name}</span>
+        <span class="pc__story">{story}</span>
+        <span class="pc__hint">点击返回</span>
+      </span>
+    </span>
+  </button>
+  {src && <p class="pc__meta">采访 / 报道 <SourceBadge src={src} /></p>}
+</article>
+
+<script>
+  function personInit() {
+    document.querySelectorAll('[data-person] [data-flip]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const card = btn.closest('[data-person]');
+        const on = card.classList.toggle('is-flipped');
+        btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', personInit);
+  if (document.readyState !== 'loading') personInit();
+  else document.addEventListener('DOMContentLoaded', personInit);
+</script>
+
+<style>
+  .pc { display: flex; flex-direction: column; }
+  .pc__flip {
+    all: unset;
+    display: block;
+    width: 100%;
+    min-height: 285px;
+    perspective: 1200px;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+  .pc__flip:focus-visible { outline: 2px solid var(--c-plum); outline-offset: 3px; border-radius: var(--radius); }
+  .pc__inner {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 285px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease);
+  }
+  .pc.is-flipped .pc__inner { transform: rotateY(180deg); }
+  .pc__face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.15rem 1.2rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-shadow: 0 12px 30px -26px rgba(58, 27, 71, 0.5);
+    text-align: left;
+    overflow: hidden;
+  }
+  .pc__front { background: linear-gradient(160deg, var(--c-white), color-mix(in srgb, var(--c-gold) 16%, var(--c-white))); }
+  .pc__back { transform: rotateY(180deg); background: linear-gradient(160deg, var(--c-plum-deep), var(--c-plum)); color: var(--c-mist); overflow-y: auto; }
+  .pc__avatar {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 28%, #a05bb8, var(--c-plum));
+    color: #fff;
+    font-family: var(--font-title);
+    font-size: 1.4rem;
+    flex: 0 0 auto;
+  }
+  .pc__name { font-family: var(--font-title); font-size: var(--step-1); color: var(--c-plum); }
+  .pc__label {
+    align-self: flex-start;
+    padding: 0.12rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-gold) 24%, transparent);
+    color: var(--c-plum);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+  .pc__role { font-size: 0.85rem; color: var(--c-muted); }
+  .pc__quote { font-size: 0.98rem; color: var(--c-plum-deep); line-height: 1.7; margin-top: 0.2rem; }
+  .pc__backname { font-family: var(--font-title); font-size: 1.1rem; color: var(--c-gold-soft); }
+  .pc__story { font-size: 0.92rem; line-height: 1.8; }
+  .pc__hint { margin-top: auto; font-size: 0.76rem; color: var(--c-muted); letter-spacing: 0.06em; }
+  .pc__back .pc__hint { color: color-mix(in srgb, var(--c-mist) 60%, transparent); }
+  .pc__meta { margin: 0.4rem 0 0; font-size: 0.72rem; color: var(--c-muted); }
+  @media (prefers-reduced-motion: reduce) {
+    .pc__inner { transition: none; }
+    .pc.is-flipped .pc__inner { transform: none; }
+    .pc__back { display: none; }
+    .pc.is-flipped .pc__front { display: none; }
+    .pc.is-flipped .pc__back { display: flex; transform: none; position: static; }
+    .pc__inner { min-height: 0; }
+    .pc__flip { min-height: 0; }
+  }
+</style>

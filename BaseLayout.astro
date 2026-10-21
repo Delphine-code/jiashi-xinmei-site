@@ -1,0 +1,121 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import SourceModal from '../components/SourceModal.astro';
+import JourneyNav from '../components/JourneyNav.astro';
+import siteData from '../data/site-data.json';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  bodyClass?: string;
+  theme?: string;
+}
+const {
+  title = '伽师新梅 · 戈壁绿洲上的紫色黄金',
+  description = '伽师新梅数字叙事与产业可视化作品。',
+  bodyClass = '',
+  theme = ''
+} = Astro.props;
+const sources = siteData.sources;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#5b2c6f" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <noscript>
+      <style>
+        [data-reveal] { opacity: 1 !important; transform: none !important; }
+      </style>
+    </noscript>
+    <script is:inline>document.documentElement.classList.add('js-reveal');</script>
+    <ClientRouter />
+  </head>
+  <body class={[bodyClass, theme && 'theme-' + theme].filter(Boolean).join(' ')}>
+    <a class="skip-link" href="#main">跳到主内容</a>
+    <div class="progress" aria-hidden="true"><span data-progress></span></div>
+    <Nav />
+    <main id="main" transition:animate="fade">
+      <slot />
+      <JourneyNav />
+    </main>
+    <Footer />
+    <SourceModal />
+    <script type="application/json" id="sources-data" set:html={JSON.stringify(sources)} />
+    <script>
+      function revealInit() {
+        const els = document.querySelectorAll('[data-reveal]:not(.is-in)');
+        if (!('IntersectionObserver' in window)) {
+          els.forEach((e) => e.classList.add('is-in'));
+          return;
+        }
+        requestAnimationFrame(() => {
+          els.forEach((e) => {
+            const rect = e.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.92 && rect.bottom > 0) e.classList.add('is-in');
+          });
+        });
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((en) => {
+              if (en.isIntersecting) {
+                en.target.classList.add('is-in');
+                io.unobserve(en.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.08 }
+        );
+        els.forEach((e) => io.observe(e));
+      }
+
+      function progressInit() {
+        const bar = document.querySelector('[data-progress]');
+        if (!bar || bar.dataset.bound === '1') return;
+        bar.dataset.bound = '1';
+        const onScroll = () => {
+          const h = document.documentElement;
+          const max = h.scrollHeight - h.clientHeight;
+          const p = max > 0 ? h.scrollTop / max : 0;
+          bar.style.transform = 'scaleX(' + p + ')';
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+      }
+
+      function boot() {
+        revealInit();
+        progressInit();
+      }
+
+      document.addEventListener('astro:page-load', boot);
+      if (document.readyState !== 'loading') boot();
+      else document.addEventListener('DOMContentLoaded', boot);
+    </script>
+    <style>
+      .progress {
+        position: fixed;
+        inset: 0 0 auto 0;
+        height: 3px;
+        z-index: 60;
+        background: transparent;
+        pointer-events: none;
+      }
+      .progress span {
+        display: block;
+        height: 100%;
+        transform-origin: 0 50%;
+        transform: scaleX(0);
+        background: linear-gradient(90deg, var(--c-plum), var(--c-gold));
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+---
+interface Props { no?: string; title: string; sub?: string; src?: string; }
+import SourceBadge from './SourceBadge.astro';
+const { no, title, sub, src } = Astro.props;
+---
+<header class="st" data-reveal>
+  <div class="st__line">
+    {no && <span class="st__no" aria-hidden="true">{no}</span>}
+    <h2 class="st__title">{title}</h2>
+  </div>
+  {sub && (
+    <p class="st__sub">{sub}{src && <SourceBadge src={src} />}</p>
+  )}
+</header>
+
+<style>
+  .st { margin-bottom: clamp(1.3rem, 1rem + 1.2vw, 2rem); padding-bottom: 0.9rem; border-bottom: 1px solid var(--c-line); position: relative; }
+  .st::after { content: ''; position: absolute; left: 0; bottom: -1px; width: 3.5rem; height: 2px; background: var(--c-accent, var(--c-gold)); }
+  .st__line { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+  .st__no {
+    font-family: var(--font-num);
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    color: var(--c-gold);
+    border: 1px solid color-mix(in srgb, var(--c-gold) 60%, transparent);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+  }
+  .st__title { font-size: var(--step-2); margin: 0; }
+  .st__sub {
+    margin: 0.5rem 0 0;
+    max-width: 62ch;
+    color: var(--c-muted);
+  }
+</style>

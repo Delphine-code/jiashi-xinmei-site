@@ -1,0 +1,226 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import SugarSimulator from '../components/SugarSimulator.astro';
+import GrowthTimeline from '../components/GrowthTimeline.astro';
+import SourceBadge from '../components/SourceBadge.astro';
+import siteData from '../data/site-data.json';
+
+const g = siteData.geography;
+const legal = siteData.growth.legalSpec;
+const standards = [
+  { k: '糖度', v: '25—28 度', d: '可溶性固形物低于区间下限的果不入商品果通道。' },
+  { k: '成熟度', v: '按成熟度分批', d: '同一片园子分批次采收，避免生果与过熟果混装。' },
+  { k: '果径', v: '分级采摘', d: '果径不达标不进精品线，进入加工或普通渠道。' }
+];
+---
+
+  <BaseLayout title="风土与生长 · 伽师新梅" description="从伽师的日照、温差、雪水与土壤，到一颗新梅从开花到采收的四个月。" theme="sun">
+  <PageHero
+    kicker="P2 / 风土与生长"
+    title="为什么甜，也如何成熟"
+    lead="日照、温差、雪水与土壤，共同写下伽师新梅的风味底色；历经四个月生长，糖度、成熟度与果径决定它何时下树。"
+    src="S12"
+  />
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="01" title="一颗果的甜，来自哪里" sub="光照、温差、水源与土壤，共同塑造伽师新梅的风味。" />
+      <div class="terroir__cards">
+        {g.points.map((p, i) => (
+          <article class:list={['terroir__card', { 'is-feature': i === 0 }]} data-reveal>
+            {i === 0 ? (
+              <div class="terroir__feature">
+                <span class="terroir__big"><em>2927</em>小时 / 年</span>
+                <div>
+                  <span class="terroir__icon" aria-hidden="true">{p.icon}</span>
+                  <h3 class="terroir__ctitle">{p.title}</h3>
+                  <p class="terroir__cdesc">{p.desc}</p>
+                  <p class="note"><SourceBadge src={p.src} /></p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <span class="terroir__icon" aria-hidden="true">{p.icon}</span>
+                <h3 class="terroir__ctitle">{p.title}</h3>
+                <p class="terroir__cdesc">{p.desc}</p>
+                <p class="note"><SourceBadge src={p.src} /></p>
+              </>
+            )}
+          </article>
+        ))}
+      </div>
+      <div class="terroir__meta" data-reveal>
+        <div><strong>{g.area}</strong><span>县域面积</span></div>
+        <div><strong>北纬 39°</strong><span>水果黄金种植带</span></div>
+        <div><strong>{g.population}</strong><span>县域人口</span></div>
+        <p>{g.location}。保护范围覆盖{g.geoRange.items.join('、')}。<SourceBadge src="S1" /><SourceBadge src={g.geoRange.src} /></p>
+      </div>
+
+      <figure class="terroir__orchard" data-reveal>
+        <div class="terroir__orchard-image">
+          <img
+            src="/assets/terroir/orchard-fruit.png"
+            alt="伽师新梅果园枝头成熟的新梅"
+            loading="lazy"
+          />
+        </div>
+        <figcaption class="terroir__orchard-caption">
+          <span class="eyebrow">风土现场</span>
+          <strong>甜度，先在枝头完成</strong>
+          <small>从花期到采收，四个月的光照、温差与水分，最后落在一颗紫色果实上。</small>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="02" title="一颗果的四个月" sub="从开花、坐果到转紫，沿时间轴看一颗果如何成熟。" />
+      <GrowthTimeline />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="03" title="成熟，才是采摘信号" sub="糖度、成熟度和果径，决定果子进入哪一条商品通道。" src="S7" />
+      <div class="gd__rail">
+        {standards.map((s) => (
+          <article class="gd__std" data-reveal>
+            <p class="gd__stdk">{s.k}</p>
+            <p class="gd__stdv">{s.v}</p>
+            <p class="gd__stdd">{s.d}</p>
+          </article>
+        ))}
+      </div>
+      <h3 class="gd__legal">地理标志门槛</h3>
+      <dl class="gd__legal-list">
+        {legal.items.map((s) => (
+          <div class="gd__legal-row" data-reveal>
+            <dt>{s.k}</dt>
+            <dd>{s.v}<span>{s.d}</span></dd>
+          </div>
+        ))}
+      </dl>
+      <p class="gd__note gd__note-2">{legal.note}<SourceBadge src={legal.src} /></p>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="04" title="糖度如何积累" sub="把风土条件放进模拟器，观察糖度估算值如何变化。" />
+      <SugarSimulator />
+      <div class="terroir__next">
+        <p class="eyebrow">下一站</p>
+        <div>
+          <strong>风土决定甜度，冷链决定它能走多远。</strong>
+          <a class="btn btn--solid" href="/data">继续看数字与产业 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .terroir__meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--c-line); }
+  .terroir__meta div { display: grid; gap: 0.15rem; }
+  .terroir__meta strong { color: var(--c-plum); font-family: var(--font-num); font-size: 1.05rem; }
+  .terroir__meta span { color: var(--c-muted); font-size: 0.75rem; }
+  .terroir__meta p { grid-column: 1 / -1; margin: 0.2rem 0 0; color: var(--c-muted); font-size: 0.78rem; line-height: 1.65; }
+  .terroir__orchard {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(220px, 0.8fr);
+    gap: clamp(1rem, 2vw, 2rem);
+    align-items: end;
+    margin: clamp(1.8rem, 4vw, 3.2rem) 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-line);
+  }
+  .terroir__orchard-image {
+    overflow: hidden;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    background: var(--c-white);
+  }
+  .terroir__orchard-image img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 8.5;
+    object-fit: cover;
+    object-position: center 52%;
+    transition: transform 500ms ease;
+  }
+  .terroir__orchard:hover .terroir__orchard-image img { transform: scale(1.02); }
+  .terroir__orchard-caption {
+    display: grid;
+    gap: 0.45rem;
+    padding: 0 0 0.35rem;
+  }
+  .terroir__orchard-caption .eyebrow { margin: 0; color: var(--c-gold); }
+  .terroir__orchard-caption strong { max-width: 11em; color: var(--c-plum); font-family: var(--font-title); font-size: clamp(1.15rem, 1rem + 0.7vw, 1.65rem); line-height: 1.25; }
+  .terroir__orchard-caption small { max-width: 28em; color: var(--c-muted); font-size: 0.82rem; line-height: 1.7; }
+  .terroir__next { display: grid; gap: 0.45rem; margin-top: 1.8rem; padding: 1.1rem 1.2rem; border-radius: 4px; background: color-mix(in srgb, var(--c-plum) 7%, var(--c-white)); border: 1px solid var(--c-line); }
+  .terroir__next p { margin: 0; }
+  .terroir__next > div { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .terroir__next strong { color: var(--c-plum); font-family: var(--font-title); }
+  .terroir__card {
+    padding: 1.3rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    box-shadow: none;
+  }
+  .terroir__cards { display: grid; gap: var(--gap); grid-template-columns: 1fr; }
+  .terroir__card.is-feature {
+    grid-column: 1 / -1;
+    background: color-mix(in srgb, var(--c-gold) 20%, var(--c-white));
+    border-color: color-mix(in srgb, var(--c-gold) 55%, var(--c-line));
+  }
+  .terroir__feature { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: center; }
+  .terroir__big { font-family: var(--font-num); font-size: clamp(2.6rem, 1.8rem + 4vw, 4.4rem); line-height: 1; color: var(--c-plum); }
+  .terroir__big em { font-style: normal; }
+  @media (min-width: 880px) {
+    .terroir__cards { grid-template-columns: 1fr 1fr 1fr; }
+    .terroir__feature { grid-template-columns: auto 1fr; gap: clamp(1.2rem, 0.8rem + 2vw, 2.6rem); }
+    .terroir__big { font-size: clamp(3.2rem, 2.4rem + 3vw, 5.2rem); }
+  }
+  .terroir__icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--c-gold) 26%, transparent);
+    color: var(--c-plum);
+    font-family: var(--font-title);
+    font-size: 1.05rem;
+    margin-bottom: 0.7rem;
+  }
+  .terroir__ctitle { font-size: var(--step-1); margin-bottom: 0.35rem; }
+  .terroir__cdesc { font-size: 0.92rem; color: var(--c-muted); }
+  .gd__std { padding: 1.3rem; border-radius: 4px; border: 1px solid var(--c-line); background: var(--c-white); }
+  .gd__rail { display: grid; gap: var(--gap); grid-template-columns: 1fr; }
+  .gd__stdk { font-size: 0.82rem; letter-spacing: 0.08em; color: var(--c-plum-soft); margin: 0 0 0.3rem; }
+  .gd__stdv { font-family: var(--font-num); font-size: var(--step-2); color: var(--c-plum); margin: 0 0 0.5rem; }
+  .gd__stdd { font-size: 0.9rem; color: var(--c-muted); margin: 0; }
+  .gd__legal { font-size: var(--step-1); color: var(--c-plum); margin: 2rem 0 0.8rem; }
+  .gd__legal-list { margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.55rem; }
+  .gd__legal-row { display: grid; grid-template-columns: auto 1fr; gap: 1rem; padding: 0.75rem 1rem; border-radius: 4px; border: 1px solid var(--c-line); background: var(--c-white); }
+  .gd__legal-row dt { font-family: var(--font-num); font-size: 0.92rem; color: var(--c-gold); white-space: nowrap; }
+  .gd__legal-row dd { margin: 0; font-size: 0.94rem; color: var(--c-plum-deep); }
+  .gd__legal-row dd span { display: block; font-size: 0.84rem; color: var(--c-muted); }
+  .gd__note-2 { margin-top: 1.2rem; }
+  .gd__rail { position: relative; }
+  .gd__rail::before { content: '商品通道'; position: absolute; top: -1.15rem; right: 0; color: var(--c-gold); font-size: 0.72rem; letter-spacing: 0.12em; }
+  @media (min-width: 880px) { .gd__rail { grid-template-columns: 1fr 1fr 1fr; } .gd__rail .gd__std { position: relative; } .gd__rail .gd__std:not(:last-child)::after { content: "→"; position: absolute; right: -1.35rem; top: 50%; transform: translateY(-50%); color: var(--c-gold); font-family: var(--font-num); font-size: 1.3rem; z-index: 1; } }
+  @media (max-width: 620px) {
+    .terroir__meta { grid-template-columns: 1fr 1fr; }
+    .terroir__next > div { align-items: flex-start; flex-direction: column; }
+  }
+  @media (max-width: 760px) {
+    .terroir__orchard { grid-template-columns: 1fr; align-items: start; }
+    .terroir__orchard-caption { padding: 0.15rem 0 0; }
+  }
+</style>

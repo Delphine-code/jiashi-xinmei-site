@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import SourceBadge from '../components/SourceBadge.astro';
+import siteData from '../data/site-data.json';
+
+const { sources, conflicts, assets, pages, science, work, more } = siteData;
+const workRows = [
+  { k: '作品名称', v: work.name },
+  { k: '作品类型', v: work.type },
+  { k: '技术实现', v: work.stack },
+  { k: '数据来源', v: work.dataNote },
+  { k: '数据整理', v: work.compiled }
+];
+const sourceRows = Object.entries(sources);
+---
+
+  <BaseLayout title="关于与来源 · 伽师新梅" description="完整数据来源清单、数据口径说明、素材与授权说明、网站地图与免责声明。" theme="paper">
+  <PageHero
+    kicker="P7 / 关于"
+    title="关于与来源"
+    lead="这里交代数据来源、数据口径，以及图片和字体的使用信息。"
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <h3 class="ab__h3">作品信息</h3>
+      <dl class="workinfo">
+        {workRows.map((r) => (
+          <div class="workinfo__row">
+            <dt>{r.k}</dt>
+            <dd>{r.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="01" title="每个数字都有出处" sub="正文角标对应下表来源；点击编号，可以回到原始报道或资料说明。" />
+      <div class="tablewrap">
+        <table class="data">
+          <thead>
+            <tr><th>编号</th><th>来源</th><th>时间</th><th>链接</th></tr>
+          </thead>
+          <tbody>
+            {sourceRows.map(([key, s]) => (
+              <tr>
+                <td><SourceBadge src={key} /></td>
+                <td>{s.text}</td>
+                <td>{s.date || '—'}</td>
+                <td>{s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer">打开</a> : '会议材料 / 调研材料'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="note ab__note">
+        说明：S9—S11 为团队在伽师县调研期间获得的会议致辞、话术稿与采访稿，无公开链接，已在网站中以「调研材料」形式标注。
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="02" title="数据口径" sub="页面统一采用下列口径。" />
+      <div class="tablewrap">
+        <table class="data">
+          <thead>
+            <tr><th>项目</th><th>采用口径</th></tr>
+          </thead>
+          <tbody>
+            {conflicts.map((c) => (
+              <tr><td>{c.item}</td><td>{c.value}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="03" title="素材与授权说明" sub="图片、字体与地图边界的来源与使用信息，逐项公开。" />
+      <div class="tablewrap">
+        <table class="data">
+          <thead>
+            <tr><th>素材类型</th><th>来源</th><th>授权 / 使用说明</th><th>状态</th></tr>
+          </thead>
+          <tbody>
+            {assets.map((a) => (
+              <tr><td>{a.item}</td><td>{a.from}</td><td>{a.license}</td><td>{a.status}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="note ab__note">文字、数据与视觉内容均经过整理和校对。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="04" title="网站地图" sub="主线页面依次回答产地、生长、产业、科学、人物与品牌问题。" />
+      <ul class="ab__sitemap">
+        <li><a href="/"><span class="ab__no">P1</span>首页 · 悬念与导览</a></li>
+        {pages.filter((p) => !more.some((m) => m.href === p.href)).map((p) => (
+          <li><a href={p.href}><span class="ab__no">{p.no}</span>{p.title} · {p.sub}</a></li>
+        ))}
+        {more.map((m) => (
+          <li><a href={m.href}><span class="ab__no">延伸</span>{m.title}</a></li>
+        ))}
+      </ul>
+      <ul class="ab__more">
+        {more.map((m) => (<li><strong>{m.title}</strong>{m.note}</li>))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="05" title="免责声明" sub="关于科学普及内容与数据引用边界的说明。" />
+      <div class="disclaimer ab__disclaimer">
+        <p><strong>科普内容：</strong>{science.disclaimer}涉及成分与营养的表述均来自公开资料整理，不构成医疗、营养或用药建议。</p>
+        <p><strong>数据引用：</strong>本作品引用的数据均标注来源与时间。部分产业数据为「预计」值或县内产业材料口径，已在正文中注明，不代表官方最终统计结果。</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ab__note { margin-top: 1rem; }
+  .ab__h3 { font-size: var(--step-1); color: var(--c-plum); margin: 2rem 0 0.9rem; }
+  .ab__more { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+  .ab__more li { font-size: 0.9rem; color: var(--c-muted); }
+  .ab__more strong { color: var(--c-plum); margin-right: 0.5rem; }
+  .workinfo { margin: 0; display: grid; }
+  .workinfo__row { display: grid; grid-template-columns: 6rem 1fr; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px dashed var(--c-line); }
+  .workinfo__row:first-child { border-top: 1px dashed var(--c-line); }
+  .workinfo dt { color: var(--c-muted); font-size: 0.9rem; }
+  .workinfo dd { margin: 0; color: var(--c-plum-deep); font-size: 0.95rem; }
+  .ab__sitemap { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .ab__sitemap a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    text-decoration: none;
+    font-size: 0.93rem;
+    color: var(--c-plum-deep);
+    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .ab__sitemap a:hover { border-color: var(--c-gold); transform: translateY(-2px); }
+  .ab__no { font-family: var(--font-num); font-size: 0.78rem; color: var(--c-gold); }
+  .ab__disclaimer p { margin: 0 0 0.7rem; }
+  .ab__disclaimer p:last-child { margin-bottom: 0; }
+</style>
