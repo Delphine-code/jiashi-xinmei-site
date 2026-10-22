@@ -72,7 +72,7 @@ const star = { name: '伽师新梅', coord: [76.72, 39.49] };
     <title>中国 · 伽师新梅</title>
     <meta name="description" content="伽师新梅：戈壁绿洲上的紫色黄金。从一颗新梅出发，沿中国风物地图认识它的产地与故事。" />
     <meta name="theme-color" content="#3a1b47" />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="entry">
     <header class="entry__head">
@@ -94,7 +94,7 @@ const star = { name: '伽师新梅', coord: [76.72, 39.49] };
         <span class="entry__legend-item"><i class="entry__legend-dot"></i>特色物产</span>
         <span class="entry__legend-item">
           <button class="entry__legend-meimei" type="button" data-meimei-preview aria-label="放大查看梅梅">
-            <img class="entry__legend-star" src={`${import.meta.env.BASE_URL}assets/meimei-map-icon.png`} alt="梅梅" />
+            <img class="entry__legend-star" src="/assets/meimei-map-icon.png" alt="梅梅" />
           </button>
           <span>伽师新梅</span>
         </span>
@@ -127,7 +127,7 @@ const star = { name: '伽师新梅', coord: [76.72, 39.49] };
     <p class="entry__note">地图标注各地代表性物产</p>
     <div class="entry__meimei-dialog" data-meimei-dialog hidden role="dialog" aria-modal="true" aria-label="梅梅预览">
       <button class="entry__meimei-close" type="button" data-meimei-close aria-label="关闭梅梅预览">×</button>
-      <img src={`${import.meta.env.BASE_URL}assets/meimei-map-icon.png`} alt="梅梅·伽师新梅" />
+      <img src="/assets/meimei-map-icon.png" alt="梅梅·伽师新梅" />
       <p>梅梅 · 伽师新梅</p>
     </div>
   </body>
@@ -416,7 +416,8 @@ const star = { name: '伽师新梅', coord: [76.72, 39.49] };
     const chart = echarts.init(el);
     window.addEventListener('resize', () => chart.resize());
 
-    Promise.all([fetch(`${import.meta.env.BASE_URL}geo/china.json`).then((r) => r.json()), fetch(`${import.meta.env.BASE_URL}geo/xinjiang.json`).then((r) => r.json())])
+    const assetBase = import.meta.env.BASE_URL;
+    Promise.all([fetch(`${assetBase}geo/china.json`).then((r) => r.json()), fetch(`${assetBase}geo/xinjiang.json`).then((r) => r.json())])
       .then(([china, xinjiang]) => {
         chinaGeo = restoreGeoNames(china, chinaNames);
         xinjiangGeo = restoreGeoNames(xinjiang, xinjiangNames);
@@ -719,7 +720,7 @@ const star = { name: '伽师新梅', coord: [76.72, 39.49] };
       if (star?.coord) series.push({
         name: '重点', type: 'scatter', coordinateSystem: 'geo',
         data: [{ name: star.name, value: star.coord, province: '新疆维吾尔自治区', city: '喀什地区', note: '新疆特色果品 · 重点推荐' }],
-        symbol: `image://${import.meta.env.BASE_URL}assets/meimei-map.png`, symbolSize: 40,
+        symbol: 'image:///assets/meimei-map.png', symbolSize: 40,
         itemStyle: { shadowBlur: 18, shadowColor: 'rgba(255,217,138,0.8)' },
         label: { show: true, position: 'top', distance: 7, formatter: star.name, fontSize: 15, fontWeight: 700, color: '#6b344d', textBorderColor: 'transparent', textBorderWidth: 0, textShadowColor: 'rgba(255,255,255,0.45)', textShadowBlur: 2 },
         tooltip: {
@@ -862,7 +863,7 @@ const star = { name: '伽师新梅', coord: [76.72, 39.49] };
         root?.classList.add('is-entering');
         if (infoMain) infoMain.innerHTML = '<span class="hl">伽师新梅</span> · 即将进入故事';
         if (infoSub) infoSub.textContent = '从产地出发，继续认识风土、产业与人物';
-        window.setTimeout(() => window.location.assign(`${import.meta.env.BASE_URL}`), reduce ? 0 : 260);
+        window.setTimeout(() => window.location.assign('/'), reduce ? 0 : 260);
         return;
       }
       if (mode === 'xinjiang') {
