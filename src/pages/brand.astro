@@ -4,7 +4,6 @@ import PageHero from '../components/PageHero.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import FigureBlock from '../components/FigureBlock.astro';
 import siteData from '../data/site-data.json';
-import { withBase } from '../utils/paths';
 
 const b = siteData.brand;
 const { photos } = siteData;
@@ -21,29 +20,29 @@ const conceptItems = [
   }
 ];
 const productConcepts = [
-  { src: withBase('/assets/brand/concept-juice.jpg'), alt: '伽师新梅西梅汁瓶装包装设计', name: '西梅汁 · 瓶装', tag: '包装设计', desc: '以果紫为主色，将品名、梅梅与果实信息收束在瓶贴之中，形成明确的正面识别。' },
-  { src: withBase('/assets/brand/concept-jam.webp'), alt: '伽师新梅西梅果酱包装设计', name: '西梅果酱', tag: '包装设计', desc: '以瓶贴为视觉中心，将梅梅、果实与装饰纹样组织成完整的加工品包装。' },
-  { src: withBase('/assets/brand/concept-dried.webp'), alt: '伽师新梅西梅干包装设计', name: '西梅干', tag: '包装设计', desc: '用更明快的果实图形突出品名与品类，让西梅干在货架上快速被认出。' },
-  { src: withBase('/assets/brand/concept-plush.webp'), alt: '梅梅毛绒玩偶设计', name: '梅梅毛绒玩偶', tag: 'IP 周边设计', desc: '保留帽饰、叶片与腮红等识别细节，让梅梅从包装形象延展为可亲近的实体周边。' },
-  { src: withBase('/assets/brand/concept-keychain.webp'), alt: '梅梅挂件设计', name: '梅梅挂件', tag: 'IP 周边设计', desc: '将梅梅形象转化为轻量化挂件，让伽师新梅成为可以随身携带的记忆。' }
+  { src: '/jiashi-xinmei-site/assets/brand/concept-juice.jpg', alt: '伽师新梅西梅汁瓶装包装设计', name: '西梅汁 · 瓶装', tag: '包装设计', desc: '以果紫为主色，将品名、梅梅与果实信息收束在瓶贴之中，形成明确的正面识别。' },
+  { src: '/jiashi-xinmei-site/assets/brand/concept-jam.webp', alt: '伽师新梅西梅果酱包装设计', name: '西梅果酱', tag: '包装设计', desc: '以瓶贴为视觉中心，将梅梅、果实与装饰纹样组织成完整的加工品包装。' },
+  { src: '/jiashi-xinmei-site/assets/brand/concept-dried.webp', alt: '伽师新梅西梅干包装设计', name: '西梅干', tag: '包装设计', desc: '用更明快的果实图形突出品名与品类，让西梅干在货架上快速被认出。' },
+  { src: '/jiashi-xinmei-site/assets/brand/concept-plush.webp', alt: '梅梅毛绒玩偶设计', name: '梅梅毛绒玩偶', tag: 'IP 周边设计', desc: '保留帽饰、叶片与腮红等识别细节，让梅梅从包装形象延展为可亲近的实体周边。' },
+  { src: '/jiashi-xinmei-site/assets/brand/concept-keychain.webp', alt: '梅梅挂件设计', name: '梅梅挂件', tag: 'IP 周边设计', desc: '将梅梅形象转化为轻量化挂件，让伽师新梅成为可以随身携带的记忆。' }
 ];
 const realProducts = [
   {
-    src: withBase('/assets/brand/product-pouch.jpg'),
+    src: '/jiashi-xinmei-site/assets/brand/product-pouch.jpg',
     alt: '伽师新梅西梅汁袋装包装设计',
     name: '西梅汁 · 袋装',
     tag: '包装设计',
     desc: '以大面积果紫和梅梅形象建立视觉中心，袋面清楚保留品名、规格与风味信息。'
   },
   {
-    src: withBase('/assets/brand/product-can-purple.jpg'),
+    src: '/jiashi-xinmei-site/assets/brand/product-can-purple.jpg',
     alt: '伽师新梅西梅精酿罐装包装设计',
     name: '西梅精酿 · 紫色罐',
     tag: '包装设计',
     desc: '紫色罐体强化品类识别，银色罐口与水珠质感形成冷感对比，呈现西梅精酿的清爽气质。'
   },
   {
-    src: withBase('/assets/brand/product-can-cream.jpg'),
+    src: '/jiashi-xinmei-site/assets/brand/product-can-cream.jpg',
     alt: '伽师新梅西梅奶啤罐装包装设计',
     name: '西梅奶啤 · 奶油罐',
     tag: '包装设计',
@@ -71,7 +70,7 @@ const galleryItems = [
     <div class="wrap">
       <SectionTitle no="01" title="先让梅梅成为记忆点" />
       <article class="br__ip" data-reveal>
-        <img class="br__zoomable" src={withBase('/assets/meimei-map.png')} alt="梅梅·伽师新梅品牌形象" data-lightbox-src={withBase('/assets/meimei-map.png')} data-lightbox-alt="梅梅·伽师新梅品牌形象" data-lightbox-caption="主视觉 IP · 梅梅" tabindex="0" role="button" aria-label="放大查看：梅梅·伽师新梅品牌形象" />
+        <img class="br__zoomable" src="/jiashi-xinmei-site/assets/meimei-map.png" alt="梅梅·伽师新梅品牌形象" data-lightbox-src="/jiashi-xinmei-site/assets/meimei-map.png" data-lightbox-alt="梅梅·伽师新梅品牌形象" data-lightbox-caption="主视觉 IP · 梅梅" tabindex="0" role="button" aria-label="放大查看：梅梅·伽师新梅品牌形象" />
         <div class="br__ip-copy">
           <p class="eyebrow">主视觉 IP</p>
           <h3>梅梅</h3>
@@ -80,7 +79,7 @@ const galleryItems = [
         </div>
       </article>
       <figure class="br__scene" data-reveal>
-        <img class="br__zoomable" src={withBase('/assets/brand/ip-scene.jpg')} alt="伽师新梅礼盒包装设计" data-lightbox-src={withBase('/assets/brand/ip-scene.jpg')} data-lightbox-alt="伽师新梅礼盒包装设计" data-lightbox-caption="礼盒包装 · 伽乡梅盛" tabindex="0" role="button" aria-label="放大查看：伽师新梅礼盒包装设计" />
+        <img class="br__zoomable" src="/jiashi-xinmei-site/assets/brand/ip-scene.jpg" alt="伽师新梅礼盒包装设计" data-lightbox-src="/jiashi-xinmei-site/assets/brand/ip-scene.jpg" data-lightbox-alt="伽师新梅礼盒包装设计" data-lightbox-caption="礼盒包装 · 伽乡梅盛" tabindex="0" role="button" aria-label="放大查看：伽师新梅礼盒包装设计" />
         <figcaption>礼盒包装 · 伽乡梅盛</figcaption>
         <p class="br__scene-note"><strong>“伽乡梅盛”</strong>将“家乡美盛”与“伽师新梅”融合，表达家乡物产丰盛、生活美好的愿景。画面把新梅枝叶、果实与伽师地域建筑放在同一场景中，让果园记忆延伸到家乡街巷；果紫、叶绿与暖金色共同营造地域感。正面的“伽乡梅盛”采用艺术字设计，将书法笔触与装饰结构结合，使名称本身成为礼盒的核心视觉。</p>
       </figure>
