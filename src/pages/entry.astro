@@ -416,7 +416,7 @@ const star = { name: '伽师新梅', coord: [76.72, 39.49] };
     const chart = echarts.init(el);
     window.addEventListener('resize', () => chart.resize());
 
-    const assetBase = import.meta.env.BASE_URL;
+    const assetBase = '/jiashi-xinmei-site/';
     Promise.all([fetch(`${assetBase}geo/china.json`, { cache: 'no-store' }).then((r) => r.json()), fetch(`${assetBase}geo/xinjiang.json`, { cache: 'no-store' }).then((r) => r.json())])
       .then(([china, xinjiang]) => {
         chinaGeo = restoreGeoNames(china, chinaNames);
