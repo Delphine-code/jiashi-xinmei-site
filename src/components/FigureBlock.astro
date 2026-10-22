@@ -1,0 +1,53 @@
+---
+import { withBase } from '../utils/paths';
+
+interface Props {
+  src?: string;
+  alt?: string;
+  label?: string;
+  caption?: string;
+  credit?: string;
+  ratio?: string;
+}
+const { src, alt = '', label = '图片占位', caption, credit, ratio = '16 / 10' } = Astro.props;
+const imageSrc = src ? withBase(src) : '';
+---
+<figure class="fb" data-reveal>
+  <div class="fb__frame" style={`aspect-ratio:${ratio}`}>
+    {src
+      ? <img src={imageSrc} alt={alt} loading="lazy" decoding="async" data-lightbox-src={imageSrc} data-lightbox-alt={alt} data-lightbox-caption={caption || alt} tabindex="0" role="button" aria-label={`放大查看：${caption || alt}`} />
+      : <div class="fb__ph"><span>{label}</span></div>}
+  </div>
+  {(caption || credit) && (
+    <figcaption class="fb__cap">
+      {caption && <span>{caption}</span>}
+      {credit && <small>{credit}</small>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .fb { margin: 0; }
+  .fb__frame {
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--c-gold) 12%, var(--c-mist));
+    border: 1px solid var(--c-line);
+  }
+  .fb__frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.55s var(--ease), filter 0.55s var(--ease); }
+  .fb:hover .fb__frame img { transform: scale(1.035); filter: saturate(1.05); }
+  .fb__ph {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background-image: repeating-linear-gradient(45deg, transparent 0 12px, color-mix(in srgb, var(--c-plum) 6%, transparent) 12px 24px);
+  }
+  .fb__ph span {
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    color: color-mix(in srgb, var(--c-plum) 62%, transparent);
+  }
+  .fb__cap { display: grid; gap: 0.16rem; margin-top: 0.6rem; font-size: 0.85rem; color: var(--c-muted); }
+  .fb__cap small { font-size: 0.72rem; color: color-mix(in srgb, var(--c-muted) 82%, transparent); }
+</style>

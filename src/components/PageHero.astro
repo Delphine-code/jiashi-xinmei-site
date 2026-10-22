@@ -1,0 +1,139 @@
+---
+interface Props {
+  kicker?: string;
+  title: string;
+  lead?: string;
+  src?: string;
+}
+import SourceBadge from './SourceBadge.astro';
+const { kicker, title, lead, src } = Astro.props;
+---
+<section class="phero">
+  <div class="wrap phero__inner">
+    <div class="phero__copy">
+      {kicker && <p class="phero__kicker">{kicker}</p>}
+      <h1 class="phero__title" transition:name="page-title">{title}</h1>
+      {lead && (
+        <p class="phero__lead">
+          {lead}{src && <SourceBadge src={src} />}
+        </p>
+      )}
+    </div>
+    <div class="phero__mark" aria-hidden="true"><span></span><span></span><span></span></div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    border-bottom: 1px solid var(--c-line);
+    padding-block: clamp(2.6rem, 1rem + 7vw, 5.5rem) clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    isolation: isolate;
+    background: var(--c-mist);
+    overflow: hidden;
+  }
+  .phero::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: min(42vw, 480px);
+    aspect-ratio: 1;
+    right: -10vw;
+    top: -38%;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--c-plum) 18%, transparent);
+    box-shadow: 0 0 0 22px color-mix(in srgb, var(--c-gold) 7%, transparent), 0 0 0 44px color-mix(in srgb, var(--c-plum) 5%, transparent);
+  }
+  .phero__inner { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem; align-items: end; }
+  .phero__copy { max-width: 760px; }
+  .phero__kicker {
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-gold);
+    margin-bottom: 0.5rem;
+  }
+  .phero__title {
+    font-size: var(--step-3);
+    margin-bottom: 0.6rem;
+  }
+  .phero__lead {
+    font-size: var(--step-1);
+    color: var(--c-plum-deep);
+    max-width: 60ch;
+    margin-bottom: 0;
+  }
+  .phero__mark { display: grid; gap: 0.45rem; align-content: end; padding-bottom: 0.45rem; }
+  .phero__mark span { display: block; width: 42px; height: 1px; background: var(--c-gold); }
+  .phero__mark span:nth-child(2) { width: 28px; background: var(--c-plum); }
+  .phero__mark span:nth-child(3) { width: 16px; background: var(--c-jade); }
+  /* 每页主题差异：风土=sun / 生长=leaf / 产业链=flow / 人物=warm / 科学=lab / 文创=craft / 关于=paper */
+  body.theme-sun .phero {
+    background: #f1e7d3;
+  }
+  body.theme-leaf .phero {
+    background: #e9eee2;
+  }
+  body.theme-flow .phero {
+    background: #eee5e7;
+  }
+  body.theme-warm .phero {
+    background: #f3e6dc;
+  }
+  body.theme-lab .phero {
+    background: #e9e7e0;
+  }
+  body.theme-craft .phero {
+    background: #eee5dc;
+  }
+  body.theme-paper .phero {
+    background: var(--c-white);
+  }
+  body.theme-sun .phero::before {
+    border-radius: 18%;
+    transform: rotate(18deg);
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--c-gold) 30%, transparent);
+    box-shadow: 0 0 0 22px color-mix(in srgb, var(--c-gold) 7%, transparent);
+  }
+  body.theme-flow .phero::before {
+    border-radius: 50%;
+    border-color: color-mix(in srgb, var(--c-plum) 18%, transparent);
+  }
+  body.theme-lab .phero::before {
+    border-radius: 8%;
+    transform: rotate(45deg) scale(0.75);
+    border-color: color-mix(in srgb, var(--c-ink) 24%, transparent);
+    box-shadow: 0 0 0 22px color-mix(in srgb, var(--c-jade) 7%, transparent);
+  }
+  body.theme-warm .phero::before {
+    border-radius: 54% 46% 62% 38%;
+    transform: rotate(-12deg) scale(1.08);
+    border-color: color-mix(in srgb, var(--c-berry) 22%, transparent);
+    box-shadow: 0 0 0 22px color-mix(in srgb, var(--c-berry) 7%, transparent);
+  }
+  body.theme-craft .phero::before {
+    border-radius: 6px;
+    transform: rotate(-8deg);
+    border-color: color-mix(in srgb, var(--c-gold) 32%, transparent);
+    box-shadow: 0 0 0 22px color-mix(in srgb, var(--c-gold) 8%, transparent);
+  }
+  body.theme-paper .phero::before {
+    width: min(30vw, 340px);
+    border-radius: 0;
+    border-width: 0 0 1px 1px;
+    box-shadow: none;
+  }
+  @media (max-width: 620px) {
+    .phero__inner { grid-template-columns: 1fr; gap: 0.8rem; }
+    .phero__mark { display: flex; gap: 0.45rem; padding: 0; }
+    .phero__mark span { width: 32px; }
+  }
+
+  @media screen and (min-width: 1000px) and (orientation: landscape) {
+    .phero__inner { gap: 1rem 1.5rem; }
+    .phero__copy { max-width: 900px; }
+    .phero__lead { max-width: 66ch; }
+  }
+</style>

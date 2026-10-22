@@ -1,0 +1,367 @@
+---
+import siteData from '../data/site-data.json';
+import SourceBadge from './SourceBadge.astro';
+const cfg = siteData.map;
+const levels = cfg.levels;
+---
+
+<section class="map" data-map data-cfg={JSON.stringify(cfg)} data-reveal>
+  <header class="map__head">
+    <p class="map__kicker">定位序列</p>
+    <h2 class="map__title">从中国，到一颗果</h2>
+    <p class="map__desc">
+      四级镜头：全国 → 新疆 → 喀什 → 伽师。其他产区的果品在这个过程里只作为地理参照出现，镜头始终收在同一个主角身上。
+      <SourceBadge src={cfg.src} />
+    </p>
+  </header>
+
+  <div class="map__steps" role="group" aria-label="地图层级切换">
+    {levels.map((l, i) => (
+      <button type="button" class="map__step" data-level={String(i)}>
+        <span class="map__stepno">{String(i + 1).padStart(2, '0')}</span>
+        <span class="map__steplabel">{l.label}</span>
+      </button>
+    ))}
+  </div>
+
+  <div class="map__stage">
+    <div class="map__chart" data-map-chart aria-label="伽师新梅产区定位示意地图"></div>
+    <p class="map__loading" data-map-loading>地图数据加载中…</p>
+  </div>
+
+  <div class="map__caption">
+    <p class="map__kicker" data-map-kicker>{levels[0].kicker}</p>
+    <p class="map__text" data-map-text>{levels[0].caption}</p>
+  </div>
+
+  <p class="map__note">
+    边界数据来自阿里云 DataV.GeoAtlas，仅用于可视化示意；参照点标注为所在地级行政区驻地近似位置；全国层级可点击任意省份查看说明。
+    <SourceBadge src={cfg.peersSrc} />
+  </p>
+</section>
+
+<script>
+  const BASE_URL = import.meta.env.BASE_URL;
+  const MAP_FILES = { china: `${BASE_URL}geo/china.json`, xinjiang: `${BASE_URL}geo/xinjiang.json`, kashi: `${BASE_URL}geo/kashi.json`, jiashi: `${BASE_URL}geo/jiashi.json` };
+  const HIGHLIGHT = { china: '新疆维吾尔自治区', xinjiang: '喀什地区', kashi: '伽师县', jiashi: '伽师县' };
+  const LABEL_ON = {
+    china: { show: true, fontSize: 9, color: 'rgba(90,80,70,0.78)' },
+    xinjiang: { show: true, fontSize: 8.5, color: 'rgba(90,80,70,0.72)', width: 72, overflow: 'truncate' },
+    kashi: { show: true, fontSize: 9, color: 'rgba(90,80,70,0.8)', width: 72, overflow: 'truncate' },
+    jiashi: { show: false }
+  };
+
+  function centroidOf(feature) {
+    let x = 0, y = 0, n = 0;
+    const walk = (c) => {
+      if (typeof c[0] === 'number') { x += c[0]; y += c[1]; n += 1; return; }
+      c.forEach(walk);
+    };
+    if (feature && feature.geometry) walk(feature.geometry.coordinates);
+    return n ? [x / n, y / n] : null;
+  }
+
+  function bboxOf(feature) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    const walk = (c) => {
+      if (typeof c[0] === 'number') {
+        if (c[0] < minX) minX = c[0];
+        if (c[0] > maxX) maxX = c[0];
+        if (c[1] < minY) minY = c[1];
+        if (c[1] > maxY) maxY = c[1];
+        return;
+      }
+      c.forEach(walk);
+    };
+    if (feature && feature.geometry) walk(feature.geometry.coordinates);
+    if (minX === Infinity) return null;
+    return { minX, minY, maxX, maxY };
+  }
+
+  function diagOf(feature) {
+    const b = bboxOf(feature);
+    if (!b) return 40;
+    return Math.hypot(b.maxX - b.minX, b.maxY - b.minY);
+  }
+
+  function mapInit() {
+    const root = document.querySelector('[data-map]');
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+
+    let cfg;
+    try { cfg = JSON.parse(root.dataset.cfg); } catch (e) { return; }
+    const levels = cfg.levels;
+    const chartEl = root.querySelector('[data-map-chart]');
+    const loadingEl = root.querySelector('[data-map-loading]');
+    const kickerEl = root.querySelector('[data-map-kicker]');
+    const textEl = root.querySelector('[data-map-text]');
+    const buttons = Array.from(root.querySelectorAll('[data-level]'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let chart = null;
+    let echartsLib = null;
+    let started = false;
+    let current = 0;
+    let timer = null;
+    let chinaGeo = null;
+    let chinaClicked = false;
+    let selectedProvince = HIGHLIGHT.china;
+    const loaded = {};
+    const registered = {};
+
+    import('echarts').then((mod) => {
+      const echarts = mod.default || mod;
+      echartsLib = echarts;
+      chart = echarts.getInstanceByDom(chartEl) || echarts.init(chartEl);
+      window.addEventListener('resize', () => chart && chart.resize());
+      chartEl.style.opacity = '1';
+      chart.on('click', handleMapClick);
+      start();
+    }).catch(() => {
+      if (loadingEl) loadingEl.textContent = '图表库加载失败，请检查网络后刷新。';
+    });
+
+    function load(key) {
+      if (loaded[key]) return Promise.resolve(loaded[key]);
+      return fetch(MAP_FILES[key])
+        .then((r) => r.json())
+        .then((geo) => { loaded[key] = geo; return geo; })
+        .catch(() => null);
+    }
+
+    function baseGeo(key) {
+      return {
+        map: key,
+        roam: true,
+        zoom: key === 'china' ? 1.12 : key === 'xinjiang' ? 1.05 : 1,
+        silent: false,
+        itemStyle: { areaColor: '#f3ece1', borderColor: '#ddd3c4', borderWidth: 1 },
+        label: { show: false },
+        emphasis: { disabled: true }
+      };
+    }
+
+    function mapSeries(key, geo, name) {
+      const data = (geo.features || []).map((f) => ({
+        name: f.properties.name,
+        itemStyle: {
+          areaColor: f.properties.name === name ? '#5b2c6f' : '#f3ece1',
+          borderColor: f.properties.name === name ? '#d8a85a' : '#ddd3c4',
+          borderWidth: f.properties.name === name ? 1.5 : 1
+        }
+      }));
+      return {
+        type: 'map',
+        map: key,
+        geoIndex: 0,
+        data,
+        label: LABEL_ON[key] || { show: false },
+        labelLayout: { hideOverlap: true },
+        emphasis: {
+          itemStyle: { areaColor: '#7b3f94', borderColor: '#d8a85a', borderWidth: 1.6 },
+          label: { show: true, color: '#3a1b47', fontWeight: 700, fontSize: 10 }
+        },
+        cursor: 'pointer',
+        silent: false
+      };
+    }
+
+    function rippleSeries(c, label, size, period) {
+      return {
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        data: [{ value: c, name: label }],
+        symbolSize: size,
+        rippleEffect: { brushType: 'stroke', scale: 2.4, period: period || 2.8 },
+        itemStyle: { color: '#d8a85a', shadowBlur: 10, shadowColor: 'rgba(255,184,76,0.7)' },
+        label: { show: false },
+        zlevel: 2,
+        silent: true
+      };
+    }
+
+    function paintChina() {
+      const lv = levels[0];
+      const geo = chinaGeo;
+      if (!geo) return;
+      const notes = cfg.chinaNotes || {};
+      const note = notes[selectedProvince] || notes.default || {};
+      const feature = (geo.features || []).find((f) => f.properties.name === selectedProvince);
+      const series = [mapSeries('china', geo, selectedProvince)];
+      series.push({
+        type: 'scatter',
+        coordinateSystem: 'geo',
+        data: (cfg.peers || []).map((p) => ({ name: p.name, value: p.coord })),
+        symbolSize: 8,
+        itemStyle: { color: 'rgba(143,182,92,0.95)' },
+        label: { show: true, position: 'right', distance: 5, formatter: '{b}', fontSize: 11, color: 'rgba(91,44,111,0.85)' },
+        zlevel: 1,
+        silent: true
+      });
+      series.push({
+        type: 'scatter',
+        coordinateSystem: 'geo',
+        data: [{ name: '伽师新梅', value: [76.72, 39.49] }],
+        symbol: `image://${BASE_URL}assets/meimei-map.png`,
+        symbolSize: 30,
+        itemStyle: { shadowBlur: 12, shadowColor: 'rgba(160,91,184,0.8)' },
+        label: { show: true, position: 'top', formatter: '伽师新梅', fontSize: 12, fontWeight: 700, color: '#5b2c6f' },
+        zlevel: 3,
+        silent: false,
+        cursor: 'pointer'
+      });
+      chart.setOption({ geo: baseGeo('china'), series, animationDurationUpdate: reduce ? 0 : 600, animationEasingUpdate: 'cubicOut' }, { notMerge: true });
+      if (kickerEl) kickerEl.textContent = chinaClicked ? '01 / 中国 · ' + (note.title || selectedProvince) : '01 / 中国 · 点击省份查看';
+      if (textEl) textEl.textContent = chinaClicked ? (note.note || lv.caption) : lv.caption;
+    }
+
+    function handleMapClick(params) {
+      if (current !== 0 || !params || !params.name) return;
+      const name = String(params.name);
+      if (!chinaGeo) return;
+      if (name === '伽师新梅') { stopAuto(); go(1); return; }
+      stopAuto();
+      chinaClicked = true;
+      selectedProvince = name;
+      paintChina();
+    }
+
+    function render(i) {
+      const lv = levels[i];
+      const key = lv.key;
+      load(key).then((geo) => {
+        if (!geo) { if (loadingEl) loadingEl.textContent = '地图数据加载失败。'; return; }
+        if (!registered[key] && echartsLib) { echartsLib.registerMap(key, geo); registered[key] = true; }
+        if (loadingEl) loadingEl.style.display = 'none';
+        const name = HIGHLIGHT[key];
+
+        if (key === 'china') {
+          chinaGeo = geo;
+          selectedProvince = HIGHLIGHT.china;
+          chinaClicked = false;
+          paintChina();
+        } else {
+          const target = (geo.features || []).find((f) => f.properties.name === name);
+          const c = centroidOf(target);
+          const series = [mapSeries(key, geo, name)];
+          if (c) series.push(rippleSeries(c, lv.label, 14, 3.2));
+          if (key === 'xinjiang') {
+            series.push({
+              type: 'scatter',
+              coordinateSystem: 'geo',
+              data: cfg.peers.map((p) => ({ name: p.name, value: p.coord })),
+              symbolSize: 6,
+              itemStyle: { color: 'rgba(111,106,99,0.55)' },
+              label: {
+                show: true,
+                position: 'right',
+                distance: 5,
+                formatter: '{b}',
+                fontSize: 11,
+                color: 'rgba(111,106,99,0.8)'
+              },
+              zlevel: 1,
+              silent: true
+            });
+          }
+          chart.setOption({
+            geo: baseGeo(key),
+            series,
+            animationDuration: reduce ? 0 : 700,
+            animationDurationUpdate: reduce ? 0 : 700,
+            animationEasingUpdate: 'cubicOut'
+          }, { notMerge: true });
+          if (kickerEl) kickerEl.textContent = lv.kicker;
+          if (textEl) textEl.textContent = lv.caption;
+        }
+
+        buttons.forEach((b, k) => b.classList.toggle('is-on', k === i));
+        root.dataset.level = key;
+      });
+    }
+
+    function go(i) {
+      current = Math.max(0, Math.min(levels.length - 1, i));
+      render(current);
+    }
+
+    function stopAuto() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    function start() {
+      if (started) return;
+      started = true;
+      go(0);
+      if (reduce || levels.length < 2) return;
+      timer = setInterval(() => {
+        if (current >= levels.length - 1) { stopAuto(); return; }
+        go(current + 1);
+      }, 3400);
+    }
+
+    buttons.forEach((b, i) => {
+      b.addEventListener('click', () => { stopAuto(); go(i); });
+    });
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if (en.isIntersecting) { start(); io.unobserve(en.target); } });
+      }, { threshold: 0.2 });
+      io.observe(root);
+    } else {
+      start();
+    }
+  }
+
+  document.addEventListener('astro:page-load', mapInit);
+  if (document.readyState !== 'loading') mapInit();
+  else document.addEventListener('DOMContentLoaded', mapInit);
+</script>
+
+<style>
+  .map {
+    border: 1px solid var(--c-line);
+    border-radius: calc(var(--radius) + 6px);
+    background: linear-gradient(180deg, var(--c-white), color-mix(in srgb, var(--c-plum) 5%, var(--c-white)));
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: var(--shadow);
+  }
+  .map__kicker { font-size: 0.78rem; letter-spacing: 0.16em; color: var(--c-plum-soft); margin: 0 0 0.35rem; }
+  .map__title { font-size: var(--step-2); margin-bottom: 0.4rem; }
+  .map__desc { color: var(--c-muted); max-width: 62ch; margin-bottom: 1.2rem; }
+  .map__steps { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .map__step {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    cursor: pointer;
+    color: var(--c-muted);
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.2s var(--ease);
+  }
+  .map__step:hover { border-color: var(--c-gold); color: var(--c-plum); }
+  .map__step.is-on { background: var(--c-plum); border-color: var(--c-plum); color: #fff; }
+  .map__stepno { font-family: var(--font-num); font-size: 0.78rem; opacity: 0.75; }
+  .map__stage { position: relative; border-radius: var(--radius); background: color-mix(in srgb, var(--c-mist) 60%, var(--c-white)); border: 1px solid var(--c-line); overflow: hidden; }
+  .map__chart { width: 100%; height: clamp(300px, 46vw, 460px); opacity: 0; transition: opacity 0.5s var(--ease); }
+  .map__loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--c-muted);
+    pointer-events: none;
+  }
+  .map__caption { margin-top: 1.1rem; min-height: 4.2em; }
+  .map__text { margin: 0; color: var(--c-plum); font-size: 1.02rem; max-width: 68ch; }
+  .map__note { margin: 1rem 0 0; font-size: 0.78rem; color: var(--c-muted); }
+</style>

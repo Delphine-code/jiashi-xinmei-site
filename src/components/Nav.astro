@@ -1,0 +1,265 @@
+---
+import siteData from '../data/site-data.json';
+import { withBase } from '../utils/paths';
+const links = siteData.nav;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  const h = withBase(href).replace(/\/$/, '') || '/';
+  return h === path;
+};
+---
+<header class="nav" data-site-nav transition:persist>
+  <div class="wrap nav__inner">
+    <div class="brand">
+      <button class="brand__avatar-button" type="button" data-avatar-open aria-label="放大查看梅梅 IP 形象">
+        <img class="brand__avatar" src={withBase('/assets/meimei-avatar-cutout.png')} alt="梅梅 IP 形象" />
+      </button>
+      <a class="brand__text" href={withBase('/')}>伽师新梅</a>
+    </div>
+
+    <a class="map-link" href={withBase('/entry')} aria-label="回到开屏地图"><span aria-hidden="true">⌖</span> 看地图</a>
+
+    <nav class="links" aria-label="主导航">
+      {links.map((l) => (
+        <a href={withBase(l.href)} data-nav-link data-nav-href={withBase(l.href)} class:list={['links__item', { 'is-active': isActive(l.href) }]} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
+      ))}
+    </nav>
+
+    <details class="menu">
+      <summary aria-label="打开菜单">菜单</summary>
+      <ul>
+        {links.map((l) => (
+          <li><a href={withBase(l.href)} data-nav-link data-nav-href={withBase(l.href)}>{l.label}</a></li>
+        ))}
+      </ul>
+    </details>
+  </div>
+</header>
+
+<div class="avatar-dialog" data-avatar-dialog hidden role="dialog" aria-modal="true" aria-label="梅梅 IP 形象预览">
+  <button class="avatar-dialog__close" type="button" data-avatar-close aria-label="关闭梅梅预览">×</button>
+        <img src={withBase('/assets/meimei-avatar-cutout.png')} alt="梅梅 IP 形象" />
+  <p>梅梅 · 伽师新梅</p>
+</div>
+
+<script>
+  const normalizePath = (value) => {
+    const path = value.replace(/\/$/, '');
+    return path || '/';
+  };
+
+  function syncNav() {
+    const nav = document.querySelector('[data-site-nav]');
+    if (!nav) return;
+    const currentPath = normalizePath(window.location.pathname);
+    nav.querySelectorAll('[data-nav-link]').forEach((link) => {
+      const targetPath = normalizePath(link.getAttribute('data-nav-href') || '');
+      const isCurrent = targetPath === currentPath || targetPath.endsWith(currentPath);
+      link.classList.toggle('is-active', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  function bindAvatarPreview() {
+    const openButton = document.querySelector('[data-avatar-open]');
+    const dialog = document.querySelector('[data-avatar-dialog]');
+    const closeButton = document.querySelector('[data-avatar-close]');
+    if (!openButton || !dialog || !closeButton || dialog.dataset.bound) return;
+    dialog.dataset.bound = 'true';
+    const close = () => {
+      dialog.hidden = true;
+      document.body.classList.remove('avatar-preview-open');
+    };
+    openButton.addEventListener('click', () => {
+      dialog.hidden = false;
+      document.body.classList.add('avatar-preview-open');
+    });
+    closeButton.addEventListener('click', close);
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) close();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !dialog.hidden) close();
+    });
+  }
+
+  document.addEventListener('astro:page-load', syncNav);
+  document.addEventListener('astro:page-load', bindAvatarPreview);
+  if (document.readyState !== 'loading') syncNav();
+  if (document.readyState !== 'loading') bindAvatarPreview();
+  else document.addEventListener('DOMContentLoaded', bindAvatarPreview);
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--c-mist) 88%, transparent);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 66px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-title);
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: var(--c-plum);
+    white-space: nowrap;
+  }
+  .brand__text { color: inherit; text-decoration: none; }
+  .brand__avatar-button {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: zoom-in;
+  }
+  .brand__avatar {
+    display: block;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 2px color-mix(in srgb, var(--c-plum) 18%, transparent));
+  }
+  .brand__avatar-button:hover .brand__avatar,
+  .brand__avatar-button:focus-visible .brand__avatar { transform: scale(1.08); }
+  .brand__avatar { transition: transform 0.2s var(--ease); }
+  .links {
+    display: none;
+    gap: 0.15rem;
+    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .map-link {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.34rem 0.62rem;
+    border: 1px solid color-mix(in srgb, var(--c-gold) 42%, var(--c-line));
+    border-radius: 999px;
+    color: var(--c-plum);
+    background: color-mix(in srgb, var(--c-gold) 10%, transparent);
+    font-size: 0.78rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .map-link:hover { background: color-mix(in srgb, var(--c-gold) 22%, transparent); transform: translateY(-1px); }
+  .map-link span { font-size: 1rem; line-height: 1; }
+  .links__item {
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.55rem;
+    border-radius: 3px;
+    color: var(--c-muted);
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .links__item:hover { color: var(--c-plum); background: color-mix(in srgb, var(--c-gold) 22%, transparent); }
+  .links__item.is-active { color: var(--c-plum); font-weight: 700; background: color-mix(in srgb, var(--c-gold) 34%, transparent); }
+  .menu { position: relative; }
+  .menu summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--c-line);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: var(--c-plum);
+    background: color-mix(in srgb, var(--c-white) 72%, transparent);
+  }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu[open] summary { color: var(--c-white); background: var(--c-plum); border-color: var(--c-plum); }
+  .menu ul {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    margin: 0;
+    padding: 0.5rem;
+    list-style: none;
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    min-width: 11rem;
+  }
+  .menu a {
+    display: block;
+    padding: 0.45rem 0.6rem;
+    text-decoration: none;
+    font-size: 0.92rem;
+    border-radius: 10px;
+  }
+  .menu a:hover, .menu a:focus-visible { background: color-mix(in srgb, var(--c-gold) 22%, transparent); }
+  .avatar-dialog[hidden] { display: none; }
+  .avatar-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    background: color-mix(in srgb, var(--c-plum-deep) 42%, transparent);
+    backdrop-filter: blur(8px);
+    cursor: zoom-out;
+  }
+  .avatar-dialog img {
+    width: min(58vw, 440px);
+    max-height: 72vh;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 28px rgb(38 17 39 / 24%));
+    pointer-events: none;
+  }
+  .avatar-dialog p {
+    position: absolute;
+    bottom: 8vh;
+    margin: 0;
+    color: var(--c-white);
+    font-family: var(--font-title);
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+  }
+  .avatar-dialog__close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid rgb(255 255 255 / 55%);
+    border-radius: 50%;
+    color: var(--c-white);
+    background: rgb(255 255 255 / 12%);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .avatar-dialog__close:hover, .avatar-dialog__close:focus-visible { background: rgb(255 255 255 / 24%); }
+  .avatar-preview-open { overflow: hidden; }
+  @media (min-width: 960px) {
+    .links { display: flex; }
+    .menu { display: none; }
+    .map-link { margin-left: 0.2rem; }
+  }
+  @media screen and (min-width: 1000px) and (orientation: landscape) {
+    .nav__inner { gap: 0.7rem; }
+    .brand { font-size: 1.08rem; }
+    .links__item { font-size: 0.88rem; padding: 0.32rem 0.48rem; }
+    .map-link { font-size: 0.78rem; padding: 0.3rem 0.55rem; }
+  }
+</style>

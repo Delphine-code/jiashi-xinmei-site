@@ -1,0 +1,74 @@
+---
+import { withBase } from '../utils/paths';
+const route = Astro.url.pathname.replace(/\/$/, '') || '/';
+const steps = [
+  { href: '/', label: '首页', title: '故事导览' },
+  { href: '/terroir', label: '风土与生长', title: '为什么甜，也如何成熟' },
+  { href: '/data', label: '数字与产业', title: '一颗果，如何走得更远' },
+  { href: '/science', label: '药食同源', title: '先看成分，再看原理' },
+  { href: '/people', label: '新梅人', title: '许多双手接住一颗果' },
+  { href: '/brand', label: '文创与品牌', title: '从网页到产品' },
+  { href: '/about', label: '关于与来源', title: '每个数字都有出处' }
+];
+const current = Math.max(0, steps.findIndex((step) => step.href === route));
+const previous = current > 0 ? steps[current - 1] : null;
+const next = current < steps.length - 1 ? steps[current + 1] : null;
+---
+
+<nav class="journey" aria-label="作品阅读路线">
+  <div class="journey__top">
+    <span class="journey__label">阅读路线</span>
+    <span class="journey__count">{String(current + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}</span>
+  </div>
+  <div class="journey__track" aria-label="页面进度">
+    {steps.map((step, index) => (
+      <a
+        class:list={['journey__dot', { 'is-current': index === current }]}
+        href={withBase(step.href)}
+        aria-label={`${step.label}：${step.title}`}
+        aria-current={index === current ? 'page' : undefined}
+      >
+        <span class="journey__number">{String(index + 1).padStart(2, '0')}</span>
+        <span class="journey__name">{step.label}</span>
+      </a>
+    ))}
+  </div>
+  <div class="journey__links">
+    {previous ? <a class="journey__prev" href={withBase(previous.href)}>← {previous.label}</a> : <a class="journey__prev" href={withBase('/entry')}>↗ 开屏地图</a>}
+    {next ? <a class="journey__next" href={withBase(next.href)}>{next.label} →</a> : <a class="journey__next" href={withBase('/entry')}>回到开屏地图 ↗</a>}
+  </div>
+</nav>
+
+<style>
+  .journey {
+    width: min(100% - 2.5rem, var(--wrap));
+    margin: clamp(2rem, 1rem + 3vw, 4rem) auto 0;
+    padding: 1.15rem 0 0;
+    border-top: 1px solid var(--c-line);
+  }
+  .journey__top, .journey__links { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+  .journey__label, .journey__count { font-size: 0.75rem; letter-spacing: 0.12em; color: var(--c-muted); }
+  .journey__count { font-family: var(--font-num); letter-spacing: 0.08em; color: var(--c-gold); }
+  .journey__track { display: flex; align-items: start; gap: 0.2rem; margin: 0.8rem 0; }
+  .journey__dot { position: relative; flex: 1; min-width: 4.5rem; display: grid; justify-items: center; gap: 0.35rem; text-decoration: none; color: var(--c-muted); }
+  .journey__dot::before { content: ''; position: absolute; left: 0; right: 0; top: 0.55rem; height: 1px; background: var(--c-line); }
+  .journey__dot:first-child::before { left: 50%; }
+  .journey__dot:last-child::before { right: 50%; }
+  .journey__number { position: relative; z-index: 1; display: grid; place-items: center; width: 1.1rem; height: 1.1rem; border: 1px solid var(--c-line); border-radius: 50%; background: var(--c-mist); font: 0.6rem var(--font-num); }
+  .journey__name { font-size: 0.68rem; white-space: nowrap; }
+  .journey__dot:hover .journey__number, .journey__dot.is-current .journey__number { border-color: var(--c-plum); background: var(--c-plum); color: var(--c-white); }
+  .journey__dot:hover .journey__name, .journey__dot.is-current .journey__name { color: var(--c-plum); }
+  .journey__dot.is-current::before { background: linear-gradient(90deg, var(--c-plum), var(--c-gold)); }
+  .journey__links a { color: var(--c-plum); font-size: 0.86rem; text-decoration: none; }
+  .journey__links a:hover { color: var(--c-gold); }
+  @media (max-width: 620px) {
+    .journey { width: min(100% - 1.5rem, var(--wrap)); }
+    .journey__track { overflow-x: auto; padding-bottom: 0.35rem; scrollbar-width: thin; }
+    .journey__dot { flex: 0 0 4.6rem; }
+    .journey__links a { font-size: 0.78rem; }
+  }
+  @media screen and (min-width: 1000px) and (orientation: landscape) {
+    .journey__name { font-size: 0.72rem; }
+    .journey__links a { font-size: 0.9rem; }
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+const items = [
+  { pct: 50, label: '种植面积占全国', value: '约 50%', note: '伽师 57 万亩 / 全国约 130 万亩', color: '#8f4fb8' },
+  { pct: 70, label: '产量占全国', value: '约 70%', note: '伽师约 70 万吨 / 全国不足 100 万吨', color: '#ffb84c' }
+];
+const C = 326.7;
+---
+<div class="sd" data-reveal>
+  {items.map((it) => (
+    <figure class="sd__item">
+      <div class="sd__ringwrap">
+        <svg class="sd__ring" viewBox="0 0 120 120" role="img" aria-label={it.label + ' ' + it.value}>
+          <circle class="sd__track" cx="60" cy="60" r="52"></circle>
+          <circle class="sd__fill" cx="60" cy="60" r="52" stroke={it.color} stroke-dasharray={`${C}`} stroke-dashoffset={`${C * (1 - it.pct / 100)}`}></circle>
+        </svg>
+        <span class="sd__pct">{it.pct}%</span>
+      </div>
+      <figcaption class="sd__meta">
+        <p class="sd__label">{it.label}</p>
+        <p class="sd__value">{it.value}</p>
+        <p class="sd__note">{it.note}</p>
+      </figcaption>
+    </figure>
+  ))}
+</div>
+
+<style>
+  .sd { display: grid; gap: var(--gap); grid-template-columns: 1fr; margin-top: 1.6rem; }
+  .sd__item {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.2rem;
+    align-items: center;
+    padding: 1.2rem 1.4rem;
+    border-radius: var(--radius);
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+  }
+  .sd__ringwrap { position: relative; width: 120px; height: 120px; }
+  .sd__ring { width: 120px; height: 120px; transform: rotate(-90deg); }
+  .sd__track { fill: none; stroke: color-mix(in srgb, var(--c-mist) 70%, var(--c-white)); stroke-width: 10; }
+  .sd__fill {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    animation: sdFill 1.4s var(--ease) both;
+  }
+  .sd__pct {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-num);
+    font-size: 1.5rem;
+    color: var(--c-plum);
+  }
+  .sd__meta { display: grid; gap: 0.2rem; }
+  .sd__label { margin: 0; font-size: 0.86rem; color: var(--c-muted); }
+  .sd__value { margin: 0; font-family: var(--font-title); font-size: 1.25rem; color: var(--c-plum); }
+  .sd__note { margin: 0; font-size: 0.82rem; color: var(--c-muted); }
+  @keyframes sdFill { from { stroke-dashoffset: 326.7; } }
+  @media (min-width: 720px) { .sd { grid-template-columns: 1fr 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .sd__fill { animation: none; } }
+</style>
