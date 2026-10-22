@@ -1133,26 +1133,26 @@
  "photos": {
   "home": {
    "voice": {
-    "src": "/assets/home/harvest-girl.webp",
+    "src": "/jiashi-xinmei-site/assets/home/harvest-girl.webp",
     "alt": "果园里抬手采摘新梅的采摘人",
     "caption": "果园采摘 · 实拍",
     "ratio": "3 / 2"
    },
    "band": [
     {
-     "src": "/assets/home/orchard-macro-fruit.webp",
+     "src": "/jiashi-xinmei-site/assets/home/orchard-macro-fruit.webp",
      "alt": "枝头成熟的新梅，果霜明显",
      "caption": "果园 · 枝头成熟的新梅，果霜明显、果肉饱满",
      "ratio": "3 / 2"
     },
     {
-     "src": "/assets/chain/sorting-line-a.webp",
+     "src": "/jiashi-xinmei-site/assets/chain/sorting-line-a.webp",
      "alt": "智能分选线上工人复检分级新梅",
      "caption": "分选线 · 按果径与成熟度分级，人工复检把关",
      "ratio": "3 / 2"
     },
     {
-     "src": "/assets/chain/juice-bottles.webp",
+     "src": "/jiashi-xinmei-site/assets/chain/juice-bottles.webp",
      "alt": "NFC 西梅汁瓶装产品",
      "caption": "深加工 · NFC 西梅汁，22 种产品中的一支",
      "ratio": "3 / 2"
@@ -1161,7 +1161,7 @@
   },
   "terroir": [
    {
-    "src": "/assets/growth/branch-fruit-b.webp",
+    "src": "/jiashi-xinmei-site/assets/growth/branch-fruit-b.webp",
     "alt": "枝头挂果的新梅果串",
     "caption": "同一片盐碱地上结出的果",
     "ratio": "3 / 2"
@@ -1169,19 +1169,19 @@
   ],
   "growth": [
    {
-    "src": "/assets/growth/branch-fruit-a.webp",
+     "src": "/jiashi-xinmei-site/assets/growth/branch-fruit-a.webp",
     "alt": "枝头新梅果实转色后期",
     "caption": "枝头果实 · 转色后期",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/growth/branch-fruit-b.webp",
+     "src": "/jiashi-xinmei-site/assets/growth/branch-fruit-b.webp",
     "alt": "枝头挂果的新梅果串",
     "caption": "枝头果实 · 挂果期",
     "ratio": "3 / 4"
    },
    {
-    "src": "/assets/growth/branch-fruit-c.webp",
+     "src": "/jiashi-xinmei-site/assets/growth/branch-fruit-c.webp",
     "alt": "成熟期枝头新梅",
     "caption": "枝头果实 · 成熟期",
     "ratio": "3 / 4"
@@ -1190,19 +1190,19 @@
   "data": [],
   "chain": [
    {
-    "src": "/assets/chain/sorting-line-b.webp",
+    "src": "/jiashi-xinmei-site/assets/chain/sorting-line-b.webp",
     "alt": "分选台面上按果径分级的新梅",
     "caption": "采摘分选 · 按果径与成熟度分级",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/chain/packing-line.webp",
+    "src": "/jiashi-xinmei-site/assets/chain/packing-line.webp",
     "alt": "产后处理流水线现场",
     "caption": "产后处理 · 流水线现场",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/chain/dried-fruit.webp",
+    "src": "/jiashi-xinmei-site/assets/chain/dried-fruit.webp",
     "alt": "深加工产品西梅干",
     "caption": "精深加工 · 西梅干，22 种产品之一",
     "ratio": "3 / 2"
@@ -1210,14 +1210,14 @@
   ],
   "people": [
    {
-    "src": "/assets/people/orchard-exchange.jpg",
+    "src": "/jiashi-xinmei-site/assets/people/orchard-exchange.jpg",
     "alt": "果园里工作人员交流新梅种植情况",
     "caption": "果园交流 · 把经验说给现场听",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/people/harvest-basket.png",
+    "src": "/jiashi-xinmei-site/assets/people/harvest-basket.png",
     "alt": "采摘季果园里，一位采摘者捧着一篮成熟的新梅",
     "caption": "采摘季 · 一篮新梅从枝头走来",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
@@ -1227,42 +1227,42 @@
   "science": [],
   "brand": [
    {
-    "src": "/assets/brand/brand-signage.webp",
+    "src": "/jiashi-xinmei-site/assets/brand/brand-signage.webp",
     "alt": "「甜蜜之约」文旅立牌",
     "caption": "文旅场景 ·「甜蜜之约」立牌（含地理标志标识）",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/brand/conference/dried-fruit-display.png",
+    "src": "/jiashi-xinmei-site/assets/brand/conference/dried-fruit-display.png",
     "alt": "2026中国新梅行业大会现场陈列的西梅干、果干罐装与礼盒",
     "caption": "大会展台 · 西梅干与果干礼盒",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/brand/conference/plum-peach-puree.png",
+    "src": "/jiashi-xinmei-site/assets/brand/conference/plum-peach-puree.png",
     "alt": "2026中国新梅行业大会现场展示的NFC新梅黄桃复合浆",
     "caption": "大会展台 · NFC 新梅黄桃复合浆",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/brand/conference/plum-apple-juice.png",
+    "src": "/jiashi-xinmei-site/assets/brand/conference/plum-apple-juice.png",
     "alt": "2026中国新梅行业大会现场展示的NFC新梅苹果复合汁",
     "caption": "大会展台 · NFC 新梅苹果复合汁",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/brand/conference/fruit-juice-display.png",
+    "src": "/jiashi-xinmei-site/assets/brand/conference/fruit-juice-display.png",
     "alt": "2026中国新梅行业大会现场展示的多种果汁产品",
     "caption": "大会展台 · 多种复合果汁",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
     "ratio": "3 / 2"
    },
    {
-    "src": "/assets/brand/conference/freeze-dried-fruit.png",
+    "src": "/jiashi-xinmei-site/assets/brand/conference/freeze-dried-fruit.png",
     "alt": "2026中国新梅行业大会现场展示的冻干伽师瓜与冻干水果产品",
     "caption": "大会展台 · 冻干水果产品",
     "credit": "图片来自：2026中国新梅行业大会官方图集",
