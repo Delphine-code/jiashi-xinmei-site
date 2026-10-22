@@ -1,10 +1,9 @@
 ---
 import siteData from '../data/site-data.json';
-import { withBase } from '../utils/paths';
 const links = siteData.nav;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (href: string) => {
-  const h = withBase(href).replace(/\/$/, '') || '/';
+  const h = href.replace(/\/$/, '') || '/';
   return h === path;
 };
 ---
@@ -12,16 +11,16 @@ const isActive = (href: string) => {
   <div class="wrap nav__inner">
     <div class="brand">
       <button class="brand__avatar-button" type="button" data-avatar-open aria-label="放大查看梅梅 IP 形象">
-        <img class="brand__avatar" src={withBase('/assets/meimei-avatar-cutout.png')} alt="梅梅 IP 形象" />
+        <img class="brand__avatar" src="/jiashi-xinmei-site/assets/meimei-avatar-cutout.png" alt="梅梅 IP 形象" />
       </button>
-      <a class="brand__text" href={withBase('/')}>伽师新梅</a>
+      <a class="brand__text" href="/">伽师新梅</a>
     </div>
 
-    <a class="map-link" href={withBase('/entry')} aria-label="回到开屏地图"><span aria-hidden="true">⌖</span> 看地图</a>
+    <a class="map-link" href="/entry" aria-label="回到开屏地图"><span aria-hidden="true">⌖</span> 看地图</a>
 
     <nav class="links" aria-label="主导航">
       {links.map((l) => (
-        <a href={withBase(l.href)} data-nav-link data-nav-href={withBase(l.href)} class:list={['links__item', { 'is-active': isActive(l.href) }]} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
+        <a href={l.href} data-nav-link data-nav-href={l.href} class:list={['links__item', { 'is-active': isActive(l.href) }]} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
       ))}
     </nav>
 
@@ -29,7 +28,7 @@ const isActive = (href: string) => {
       <summary aria-label="打开菜单">菜单</summary>
       <ul>
         {links.map((l) => (
-          <li><a href={withBase(l.href)} data-nav-link data-nav-href={withBase(l.href)}>{l.label}</a></li>
+          <li><a href={l.href} data-nav-link data-nav-href={l.href}>{l.label}</a></li>
         ))}
       </ul>
     </details>
@@ -38,7 +37,7 @@ const isActive = (href: string) => {
 
 <div class="avatar-dialog" data-avatar-dialog hidden role="dialog" aria-modal="true" aria-label="梅梅 IP 形象预览">
   <button class="avatar-dialog__close" type="button" data-avatar-close aria-label="关闭梅梅预览">×</button>
-        <img src={withBase('/assets/meimei-avatar-cutout.png')} alt="梅梅 IP 形象" />
+  <img src="/jiashi-xinmei-site/assets/meimei-avatar-cutout.png" alt="梅梅 IP 形象" />
   <p>梅梅 · 伽师新梅</p>
 </div>
 
@@ -53,8 +52,7 @@ const isActive = (href: string) => {
     if (!nav) return;
     const currentPath = normalizePath(window.location.pathname);
     nav.querySelectorAll('[data-nav-link]').forEach((link) => {
-      const targetPath = normalizePath(link.getAttribute('data-nav-href') || '');
-      const isCurrent = targetPath === currentPath || targetPath.endsWith(currentPath);
+      const isCurrent = normalizePath(link.getAttribute('data-nav-href') || '') === currentPath;
       link.classList.toggle('is-active', isCurrent);
       if (isCurrent) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
