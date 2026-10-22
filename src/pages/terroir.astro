@@ -6,7 +6,6 @@ import SugarSimulator from '../components/SugarSimulator.astro';
 import GrowthTimeline from '../components/GrowthTimeline.astro';
 import SourceBadge from '../components/SourceBadge.astro';
 import siteData from '../data/site-data.json';
-import { withBase } from '../utils/paths';
 
 const g = siteData.geography;
 const legal = siteData.growth.legalSpec;
@@ -62,7 +61,7 @@ const standards = [
       <figure class="terroir__orchard" data-reveal>
         <div class="terroir__orchard-image">
           <img
-            src={withBase('/assets/terroir/orchard-fruit.png')}
+            src="/jiashi-xinmei-site/assets/terroir/orchard-fruit.png"
             alt="伽师新梅果园枝头成熟的新梅"
             loading="lazy"
           />
@@ -116,7 +115,7 @@ const standards = [
         <p class="eyebrow">下一站</p>
         <div>
           <strong>风土决定甜度，冷链决定它能走多远。</strong>
-          <a class="btn btn--solid" href={withBase('/data')}>继续看数字与产业 →</a>
+          <a class="btn btn--solid" href="/data">继续看数字与产业 →</a>
         </div>
       </div>
     </div>
