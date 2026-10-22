@@ -123,7 +123,7 @@ const levels = cfg.levels;
 
     function load(key) {
       if (loaded[key]) return Promise.resolve(loaded[key]);
-      return fetch(MAP_FILES[key])
+      return fetch(MAP_FILES[key], { cache: 'no-store' })
         .then((r) => r.json())
         .then((geo) => { loaded[key] = geo; return geo; })
         .catch(() => null);
@@ -202,7 +202,7 @@ const levels = cfg.levels;
         type: 'scatter',
         coordinateSystem: 'geo',
         data: [{ name: '伽师新梅', value: [76.72, 39.49] }],
-        symbol: 'image:///assets/meimei-map.png',
+        symbol: `image://${import.meta.env.BASE_URL}assets/meimei-map.png`,
         symbolSize: 30,
         itemStyle: { shadowBlur: 12, shadowColor: 'rgba(160,91,184,0.8)' },
         label: { show: true, position: 'top', formatter: '伽师新梅', fontSize: 12, fontWeight: 700, color: '#5b2c6f' },
