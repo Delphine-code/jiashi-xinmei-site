@@ -6,7 +6,6 @@ import SourceModal from '../components/SourceModal.astro';
 import JourneyNav from '../components/JourneyNav.astro';
 import siteData from '../data/site-data.json';
 import '../styles/global.css';
-import { withBase } from '../utils/paths';
 
 interface Props {
   title?: string;
@@ -30,7 +29,7 @@ const sources = siteData.sources;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#5b2c6f" />
-    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="icon" type="image/svg+xml" href="/jiashi-xinmei-site/favicon.svg" />
     <noscript>
       <style>
         [data-reveal] { opacity: 1 !important; transform: none !important; }
