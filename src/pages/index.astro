@@ -5,7 +5,6 @@ import StatCard from '../components/StatCard.astro';
 import FigureBlock from '../components/FigureBlock.astro';
 import SourceBadge from '../components/SourceBadge.astro';
 import siteData from '../data/site-data.json';
-import { withBase } from '../utils/paths';
 
 const { hero, people, homeTeasers, photos } = siteData;
 const voice = people[0];
@@ -20,14 +19,14 @@ const voice = people[0];
         <p class="hero__sub">{hero.titleSub}</p>
         <p class="hero__lead">{hero.lead}</p>
         <div class="hero__cta">
-          <a class="btn btn--solid" href={withBase('/terroir')}>开始阅读：风土 →</a>
-          <a class="btn" href={withBase('/data')}>跳到产业数据</a>
-          <a class="btn" href={withBase('/entry')}>返回开屏地图 ↗</a>
+          <a class="btn btn--solid" href="/terroir">开始阅读：风土 →</a>
+          <a class="btn" href="/data">跳到产业数据</a>
+          <a class="btn" href="/entry">返回开屏地图 ↗</a>
         </div>
       </div>
 
       <figure class="hero__art">
-        <img src={withBase('/assets/home/orchard-hero.webp')} alt="伽师新梅挂在果树枝头" />
+        <img src="/jiashi-xinmei-site/assets/home/orchard-hero.webp" alt="伽师新梅挂在果树枝头" />
         <figcaption>枝头的新梅 · 伽师果园</figcaption>
       </figure>
 
@@ -43,7 +42,7 @@ const voice = people[0];
       <SectionTitle no="01" title="从一颗果开始" sub="风土、产业、成分，三条线索进入伽师新梅。" />
       <div class="grid">
         {homeTeasers.map((t) => (
-          <a class="card teaser" href={withBase(t.href)}>
+          <a class="card teaser" href={t.href}>
             <p class="teaser__num">{t.num}<span class="teaser__unit">{t.unit}</span></p>
             <h3 class="teaser__q">{t.q}</h3>
             <p class="teaser__a">{t.a}</p>
@@ -64,7 +63,7 @@ const voice = people[0];
         <p class="note">{voice.name} · {voice.role}<SourceBadge src={voice.src} /></p>
         <div class="voice__cta">
           <p class="muted">一季收成背后，是种植户、技术员、分选工和电商经营者共同接住的一条产业链。</p>
-          <a class="btn btn--solid" href={withBase('/people')}>看新梅人的故事 →</a>
+          <a class="btn btn--solid" href="/people">看新梅人的故事 →</a>
         </div>
       </div>
     </div>
