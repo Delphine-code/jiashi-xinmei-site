@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import StatCard from '../components/StatCard.astro';
+import YearChart from '../components/YearChart.astro';
+import ChainSlider from '../components/ChainSlider.astro';
+import ChainFlow from '../components/ChainFlow.astro';
+import FigureBlock from '../components/FigureBlock.astro';
+import SourceBadge from '../components/SourceBadge.astro';
+import siteData from '../data/site-data.json';
+
+const c = siteData.charts;
+const ch = siteData.chain;
+const { photos } = siteData;
+const fig = photos.chain[0];
+---
+
+<BaseLayout title="数字与产业 · 伽师新梅" description="从伽师新梅的产业规模、品牌价值到冷链流通，看一个地方果品怎样被送往更远的市场。" theme="flow">
+  <PageHero
+    kicker="P3 / 数字与产业"
+    title="一颗果，如何走得更远"
+    lead="57 万亩果园、41 万吨预计产量，以及一条不断延长的冷链。"
+    src="S15"
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="01" title="六个数字，看懂产业规模" />
+      <div class="grid">
+        {c.cards.slice(0, 6).map((k) => (
+          <StatCard value={k.value} unit={k.unit} label={k.label} src={k.src} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="02" title="产量与品牌价值" />
+      <YearChart />
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="03" title="二十天，还是六个月？" sub="拖动滑块，看冷链每推进一步，销售周期、运输半径和损耗如何改变。" />
+      <ChainSlider />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="04" title="一颗果的接力赛" sub="五个环节共同决定它能不能以好状态抵达消费者。" />
+      <ChainFlow />
+      <div class="dt__breedfig">
+        <div class="dt__breed">
+          <h3>{ch.breeding.title}</h3>
+          <ul>{ch.breeding.items.map((b) => (<li>{b}</li>))}</ul>
+          <p class="note"><SourceBadge src={ch.breeding.src} /></p>
+        </div>
+        <FigureBlock src={fig.src} alt={fig.alt} caption={fig.caption} ratio="16 / 10" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap dt__market">
+      <div>
+        <SectionTitle no="05" title="果子去了哪里" sub="从新疆出发，进入全国果品交易市场，并沿着外贸渠道走向东南亚和中亚。" src={ch.market.src} />
+        <ul class="dt__markets">{ch.market.markets.map((m) => (<li>{m}</li>))}</ul>
+      </div>
+      <aside class="dt__export"><p class="eyebrow">出口</p><p>{ch.market.export}</p><p class="note"><SourceBadge src={ch.market.exportSrc} /></p></aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .dt__pending { margin-top: 1.2rem; }
+  .dt__reading { margin: 1.2rem 0 0; padding-left: 0.9rem; border-left: 3px solid var(--c-gold); color: var(--c-muted); font-size: 0.86rem; }
+  .dt__conclusion {
+    margin-top: 1.6rem;
+    font-family: var(--font-title);
+    font-size: var(--step-1);
+    color: var(--c-plum);
+    max-width: 54ch;
+  }
+  .dt__conclusion b { font-family: var(--font-num); color: var(--c-plum); font-size: 1.15em; }
+  .dt__pricecap { margin: 1.2rem 0 0; font-size: 0.9rem; color: var(--c-muted); }
+  .dt__breedfig { display: grid; gap: var(--gap); margin-top: 1.4rem; }
+  .dt__breed { padding: 1.2rem 1.4rem; border-radius: var(--radius); border: 1px solid var(--c-line); background: color-mix(in srgb, var(--c-jade) 14%, var(--c-white)); }
+  .dt__breed h3 { color: var(--c-plum); margin-top: 0; }
+  .dt__breed ul { margin: 0 0 1rem; padding-left: 1.2rem; color: var(--c-plum-deep); }
+  .dt__market { display: grid; gap: var(--gap); align-items: start; }
+  .dt__markets { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .dt__markets li { padding: 0.4rem 0.85rem; border-radius: 999px; background: var(--c-white); border: 1px solid var(--c-line); color: var(--c-plum-deep); font-size: 0.88rem; }
+  .dt__export { padding: 1.3rem 1.4rem; border-radius: var(--radius); border: 1px solid var(--c-line); background: color-mix(in srgb, var(--c-gold) 18%, var(--c-white)); color: var(--c-plum); }
+  @media (min-width: 880px) { .dt__breedfig { grid-template-columns: 1.15fr 0.85fr; align-items: start; } .dt__market { grid-template-columns: 1.3fr 0.9fr; } }
+</style>

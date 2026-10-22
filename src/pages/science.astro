@@ -1,0 +1,228 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import RadarCompare from '../components/RadarCompare.astro';
+import NutrientBars from '../components/NutrientBars.astro';
+import SourceBadge from '../components/SourceBadge.astro';
+import siteData from '../data/site-data.json';
+
+const sc = siteData.science;
+
+const markers = [
+  { i: 1, angle: -90, r: 106 },
+  { i: 2, angle: -18, r: 106 },
+  { i: 3, angle: 54, r: 134 },
+  { i: 4, angle: 126, r: 106 },
+  { i: 5, angle: 198, r: 106 }
+];
+const rad = (a: number) => (a * Math.PI) / 180;
+const dots = markers.map((m) => ({
+  i: m.i,
+  x: Number((160 + m.r * Math.cos(rad(m.angle))).toFixed(1)),
+  y: Number((160 + m.r * Math.sin(rad(m.angle))).toFixed(1))
+}));
+---
+
+  <BaseLayout title="药食同源 · 伽师新梅" description="伽师新梅的成分构成、从水果到药食同源的产业升级，以及与进口西梅、国内其他产区的横向对比。" theme="lab">
+  <PageHero
+    kicker="P4 / 科学"
+    title="药食同源"
+    lead="一颗新梅为什么常被谈到润肠和营养？先看成分，再看原理，最后把它放回同类果品中比较。"
+    src="S2"
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="disclaimer sc__top">
+        <strong>阅读前请知悉：</strong>{sc.disclaimer}本页所有表述均来自公开资料与产业材料整理，
+        仅用于科普与产业介绍，不涉及疾病预防、治疗或功效承诺。
+      </div>
+    </div>
+  </section>
+
+  <section class="section sc__block">
+    <div class="wrap">
+      <SectionTitle no="A" title="一颗果里的五种成分" sub="把果皮、果肉和营养标签拆开来看，数值只呈现有明确出处的项目。" src="S13" />
+      <div class="sc__molecular">
+        <div class="sc__fruit">
+          <svg viewBox="0 0 320 320" role="img" aria-label="新梅剖面示意图，标注五种成分位置">
+            <defs>
+              <radialGradient id="skin" cx="34%" cy="28%">
+                <stop offset="0%" stop-color="#a66b7f" />
+                <stop offset="70%" stop-color="#6b344d" />
+                <stop offset="100%" stop-color="#30252b" />
+              </radialGradient>
+              <radialGradient id="flesh" cx="38%" cy="32%">
+                <stop offset="0%" stop-color="#f6e6a8" />
+                <stop offset="100%" stop-color="#d8a85a" />
+              </radialGradient>
+            </defs>
+            <circle cx="160" cy="160" r="146" fill="url(#skin)" />
+            <circle cx="160" cy="160" r="126" fill="url(#flesh)" />
+            <ellipse cx="160" cy="162" rx="17" ry="30" fill="#8a6a2f" opacity="0.85" />
+            {dots.map((d) => (
+              <g>
+                <circle cx={d.x} cy={d.y} r="15" fill="#fbfaf7" stroke="#6b344d" stroke-width="2" />
+                <text x={d.x} y={d.y + 5} text-anchor="middle" font-size="15" font-family="Georgia, serif" fill="#6b344d">{d.i}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+        <ul class="sc__list">
+          {sc.compounds.map((c, i) => (
+            <li data-reveal>
+              <span class="sc__idx">{i + 1}</span>
+              <div>
+                <p class="sc__cname">{c.name}<span class="sc__crole">{c.role}</span></p>
+                <p class="sc__cdesc">{c.desc}<SourceBadge src={c.src} /></p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <NutrientBars />
+      <div class="sc__upgrade" data-reveal>
+        <div class="sc__upgrade-head">
+          <h3>从鲜食果品到药食同源</h3>
+          <p>一颗果的身份变化，先发生在目录和标准里，随后才进入产品研发。</p>
+        </div>
+        <ol>
+          {sc.upgrade.items.map((item) => (
+            <li>
+              <span>{item.date}</span>
+              <p>{item.text}<SourceBadge src={item.src} /></p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="B" title="放回同类里看" sub="用五个维度比较伽师新梅与进口西梅、国内其他产区和新疆特色果品；雷达图是定性示意，不是检测报告。" />
+      <RadarCompare />
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="C" title={sc.bowel.title} sub={sc.bowel.sub} src="S22" />
+      <div class="sc__bowel">
+        {sc.bowel.steps.map((s) => (
+          <article class="sc__bowelstep" data-reveal>
+            <p class="sc__bowelno">{s.no}</p>
+            <h3 class="sc__bowelname">{s.name}<span class="sc__bowelwho">{s.who}</span></h3>
+            <p class="sc__boweldesc">{s.desc}</p>
+          </article>
+        ))}
+      </div>
+      <div class="sc__tips">
+        <h3 class="sc__tipsh">怎么吃，才有意义</h3>
+        <ul class="sc__tipslist">
+          {sc.bowel.tips.map((t) => (<li>{t}</li>))}
+        </ul>
+      </div>
+      <p class="note sc__bowelnote">{sc.bowel.note}<SourceBadge src={sc.bowel.src} /></p>
+    </div>
+  </section>
+
+  </BaseLayout>
+
+<style>
+  .sc__top { margin-top: 0; }
+  .sc__top { border-left-color: var(--c-ink); background: color-mix(in srgb, var(--c-jade) 12%, var(--c-white)); }
+  .sc__upgrade { margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--c-line); }
+  .sc__upgrade-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
+  .sc__upgrade h3 { margin: 0; color: var(--c-plum); font-size: var(--step-1); }
+  .sc__upgrade-head p { margin: 0; color: var(--c-muted); font-size: 0.84rem; }
+  .sc__upgrade ol { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+  .sc__upgrade li { display: grid; grid-template-columns: 7rem 1fr; gap: 0.8rem; padding: 0.65rem 0; border-bottom: 1px dashed var(--c-line); }
+  .sc__upgrade li:last-child { border-bottom: 0; }
+  .sc__upgrade li > span { color: var(--c-gold); font: 0.82rem var(--font-num); }
+  .sc__upgrade li p { margin: 0; color: var(--c-muted); font-size: 0.88rem; }
+  .sc__molecular { display: grid; gap: clamp(1.2rem, 0.6rem + 3vw, 3rem); grid-template-columns: 1fr; align-items: start; }
+  .sc__fruit { display: grid; place-items: start center; }
+  .sc__fruit svg { width: min(100%, 340px); height: auto; filter: drop-shadow(0 18px 34px rgba(58, 27, 71, 0.22)); }
+  .sc__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+  .sc__list li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem;
+    align-items: start;
+    padding: 0.85rem 1rem;
+    border-radius: 4px;
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+  }
+  .sc__idx {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--c-gold) 30%, transparent);
+    color: var(--c-plum);
+    font-family: var(--font-num);
+    font-size: 0.9rem;
+  }
+  .sc__cname { margin: 0 0 0.25rem; font-weight: 700; color: var(--c-plum); display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .sc__crole { font-size: 0.74rem; font-weight: 400; letter-spacing: 0.04em; padding: 0.12rem 0.5rem; border-radius: 999px; background: color-mix(in srgb, var(--c-jade) 30%, transparent); color: var(--c-ink); }
+  .sc__cdesc { margin: 0; font-size: 0.9rem; color: var(--c-muted); }
+  .sc__research { font-size: var(--step-1); color: var(--c-plum); margin: 2rem 0 0.8rem; }
+  .sc__rlist { list-style: none; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.5rem; }
+  .sc__rlist li { padding: 0.7rem 0.95rem; border-radius: 12px; background: var(--c-white); border: 1px solid var(--c-line); font-size: 0.93rem; color: var(--c-plum-deep); }
+  .sc__tl { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+  .sc__tl li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.1rem 1.3rem;
+    border-radius: 4px;
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    border-left: 3px solid var(--c-plum);
+  }
+  .sc__date { font-family: var(--font-num); font-size: 0.88rem; color: var(--c-gold); white-space: nowrap; }
+  .sc__ttext { margin: 0; font-size: 0.95rem; color: var(--c-plum-deep); }
+  .sc__bowel { display: grid; gap: var(--gap); grid-template-columns: 1fr; margin-top: 0.4rem; }
+  .sc__bowelstep {
+    position: relative;
+    padding: 1.3rem 1.4rem 1.3rem 1.6rem;
+    border-radius: 4px;
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+    border-left: 3px solid var(--c-plum);
+  }
+  .sc__bowelno { font-family: var(--font-num); font-size: 0.85rem; color: var(--c-gold); margin: 0 0 0.4rem; }
+  .sc__bowelname { font-size: var(--step-1); margin: 0 0 0.5rem; color: var(--c-plum); display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+  .sc__bowelwho {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    padding: 0.14rem 0.55rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-jade) 30%, transparent);
+    color: var(--c-ink);
+  }
+  .sc__boweldesc { margin: 0; font-size: 0.93rem; color: var(--c-muted); }
+  .sc__tips { margin-top: 1.6rem; }
+  .sc__tipsh { font-size: var(--step-1); color: var(--c-plum); margin: 0 0 0.7rem; }
+  .sc__tipslist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .sc__tipslist li {
+    padding: 0.7rem 0.95rem;
+    border-radius: 4px;
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+    font-size: 0.9rem;
+    color: var(--c-plum-deep);
+  }
+  .sc__bowelnote { margin-top: 1.2rem; }
+  @media (min-width: 880px) {
+    .sc__bowel { grid-template-columns: 1fr 1fr; }
+    .sc__molecular { grid-template-columns: 0.85fr 1.15fr; }
+    .sc__fruit svg { position: sticky; top: 4.8rem; }
+  }
+</style>

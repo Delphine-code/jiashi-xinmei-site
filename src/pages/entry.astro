@@ -1,0 +1,905 @@
+---
+import '../styles/global.css';
+const provinceProducts = [
+  { province: '北京市', name: '北京烤鸭', coord: [116.40, 39.90], note: '北京烤鸭 · 京味饮食代表' },
+  { province: '天津市', name: '天津小站稻', coord: [117.35, 39.14], note: '天津小站稻 · 津门特色农产' },
+  { province: '河北省', name: '赵州雪花梨', coord: [114.77, 37.75], note: '赵州雪花梨 · 河北特色水果' },
+  { province: '山西省', name: '山西老陈醋', coord: [112.55, 37.87], note: '山西老陈醋 · 传统酿造名品' },
+  { province: '内蒙古自治区', name: '草原羊肉', coord: [111.75, 40.84], note: '草原羊肉 · 内蒙古特色畜产品' },
+  { province: '辽宁省', name: '大连樱桃', coord: [121.62, 38.91], note: '大连樱桃 · 辽南特色水果' },
+  { province: '吉林省', name: '长白山人参', coord: [125.32, 43.82], note: '长白山人参 · 吉林道地物产' },
+  { province: '黑龙江省', name: '五常大米', coord: [127.15, 44.92], note: '五常大米 · 黑龙江优质稻米' },
+  { province: '上海市', name: '南汇水蜜桃', coord: [121.80, 31.05], note: '南汇水蜜桃 · 上海特色水果' },
+  { province: '江苏省', name: '阳山水蜜桃', coord: [120.10, 31.58], note: '阳山水蜜桃 · 江苏特色水果' },
+  { province: '浙江省', name: '西湖龙井', coord: [120.15, 30.28], note: '西湖龙井 · 浙江名茶' },
+  { province: '安徽省', name: '黄山毛峰', coord: [118.32, 29.71], note: '黄山毛峰 · 安徽名茶' },
+  { province: '福建省', name: '安溪铁观音', coord: [117.52, 24.92], note: '安溪铁观音 · 福建名茶' },
+  { province: '江西省', name: '赣南脐橙', coord: [114.94, 25.83], note: '赣南脐橙 · 江西特色水果' },
+  { province: '山东省', name: '烟台苹果', coord: [121.39, 37.52], note: '烟台苹果 · 山东特色水果' },
+  { province: '河南省', name: '铁棍山药', coord: [113.25, 35.22], note: '温县铁棍山药 · 河南特色农产' },
+  { province: '湖北省', name: '潜江小龙虾', coord: [112.90, 30.40], note: '潜江小龙虾 · 湖北特色水产' },
+  { province: '湖南省', name: '安化黑茶', coord: [111.21, 28.37], note: '安化黑茶 · 湖南名茶' },
+  { province: '广东省', name: '潮州凤凰单丛', coord: [116.63, 23.66], note: '潮州凤凰单丛 · 广东名茶' },
+  { province: '广西壮族自治区', name: '柳州螺蛳粉', coord: [109.41, 24.33], note: '柳州螺蛳粉 · 广西特色风味' },
+  { province: '海南省', name: '文昌椰子', coord: [110.80, 19.54], note: '文昌椰子 · 海南热带物产' },
+  { province: '重庆市', name: '涪陵榨菜', coord: [107.40, 30.70], note: '涪陵榨菜 · 重庆特色加工食品' },
+  { province: '四川省', name: '郫县豆瓣', coord: [103.90, 30.80], note: '郫县豆瓣 · 四川传统调味品' },
+  { province: '贵州省', name: '茅台酒', coord: [106.41, 27.79], note: '茅台酒 · 贵州酱香型白酒代表' },
+  { province: '云南省', name: '普洱茶', coord: [100.97, 22.78], note: '普洱茶 · 云南名茶' },
+  { province: '西藏自治区', name: '青稞', coord: [91.13, 29.65], note: '青稞 · 西藏高原特色作物' },
+  { province: '陕西省', name: '洛川苹果', coord: [109.43, 35.76], note: '洛川苹果 · 陕西特色水果' },
+  { province: '甘肃省', name: '兰州百合', coord: [103.82, 36.06], note: '兰州百合 · 甘肃特色农产' },
+  { province: '青海省', name: '牦牛肉', coord: [101.78, 36.62], note: '青海牦牛肉 · 高原特色畜产品' },
+  { province: '宁夏回族自治区', name: '中宁枸杞', coord: [106.20, 37.50], note: '中宁枸杞 · 宁夏道地物产' },
+  { province: '新疆维吾尔自治区', name: '吐鲁番葡萄', coord: [89.19, 42.95], note: '吐鲁番葡萄 · 新疆特色水果' },
+  { province: '台湾省', name: '凤梨', coord: [120.96, 23.70], note: '凤梨 · 台湾热带特色水果' },
+  { province: '香港特别行政区', name: '港式腊味', coord: [114.17, 22.32], note: '港式腊味 · 香港传统风味' },
+  { province: '澳门特别行政区', name: '杏仁饼', coord: [113.54, 22.19], note: '杏仁饼 · 澳门传统手信' }
+];
+const xinjiangProducts = [
+  { city: '乌鲁木齐市', name: '大盘鸡', coord: [87.62, 43.82], note: '新疆代表性风味' },
+  { city: '克拉玛依市', name: '小拐枸杞', coord: [84.87, 45.59], note: '地方特色农产品' },
+  { city: '吐鲁番市', name: '葡萄干', coord: [89.19, 42.95], note: '特色葡萄制品' },
+  { city: '哈密市', name: '哈密瓜', coord: [93.51, 42.83], note: '新疆特色瓜果' },
+  { city: '昌吉回族自治州', name: '奇台面粉', coord: [87.31, 44.01], note: '小麦加工特色产品' },
+  { city: '博尔塔拉蒙古自治州', name: '温泉大米', coord: [82.07, 44.91], note: '地方特色农产品' },
+  { city: '巴音郭楞蒙古自治州', name: '库尔勒香梨', coord: [86.15, 41.77], note: '新疆特色水果' },
+  { city: '阿克苏地区', name: '阿克苏苹果', coord: [80.26, 41.17], note: '新疆特色水果' },
+  { city: '克孜勒苏柯尔克孜自治州', name: '阿图什无花果', coord: [76.17, 39.72], note: '地方特色水果' },
+  { city: '喀什地区', name: '伽师新梅', coord: [75.99, 39.47], note: '新疆特色果品 · 重点推荐' },
+  { city: '和田地区', name: '和田红枣', coord: [79.92, 37.11], note: '新疆特色干果' },
+  { city: '伊犁哈萨克自治州', name: '伊犁薰衣草', coord: [81.32, 43.92], note: '地方特色花卉产品' },
+  { city: '塔城地区', name: '巴什拜羊', coord: [82.98, 46.75], note: '地方特色畜产品' },
+  { city: '阿勒泰地区', name: '阿勒泰冷水鱼', coord: [88.14, 47.85], note: '高寒水域特色物产' },
+  { city: '石河子市', name: '蟠桃', coord: [86.04, 44.30], note: '石河子特色水果' },
+  { city: '阿拉尔市', name: '阿拉尔红枣', coord: [81.28, 40.55], note: '特色林果产品' },
+  { city: '图木舒克市', name: '图木舒克红枣', coord: [79.07, 39.87], note: '特色林果产品' },
+  { city: '五家渠市', name: '甜瓜', coord: [87.52, 44.17], note: '特色瓜果' },
+  { city: '北屯市', name: '北屯冷水鱼', coord: [87.82, 47.33], note: '北疆特色水产' },
+  { city: '铁门关市', name: '铁门关番茄制品', coord: [85.50, 41.80], note: '特色加工农产品' },
+  { city: '双河市', name: '棉花', coord: [82.35, 44.84], note: '地方代表性农产品' },
+  { city: '可克达拉市', name: '薰衣草', coord: [80.99, 43.95], note: '伊犁河谷特色花卉产品' },
+  { city: '昆玉市', name: '昆玉红枣', coord: [79.27, 37.21], note: '特色林果产品' },
+  { city: '胡杨河市', name: '胡杨河番茄制品', coord: [84.83, 44.69], note: '特色加工农产品' }
+];
+const star = { name: '伽师新梅', coord: [76.72, 39.49] };
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>中国 · 伽师新梅</title>
+    <meta name="description" content="伽师新梅：戈壁绿洲上的紫色黄金。从一颗新梅出发，沿中国风物地图认识它的产地与故事。" />
+    <meta name="theme-color" content="#3a1b47" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+  </head>
+  <body class="entry">
+    <header class="entry__head">
+      <p class="entry__kicker">中国风物地图 · 产地索引</p>
+      <h1 class="entry__title">伽师新梅</h1>
+      <p class="entry__sub">戈壁绿洲上的紫色黄金</p>
+    </header>
+
+    <main class="entry__stage" data-entry-stage>
+      <div
+        class="entry__map"
+        id="entry-map"
+        data-products={JSON.stringify(provinceProducts)}
+        data-xinjiang={JSON.stringify(xinjiangProducts)}
+        data-star={JSON.stringify(star)}
+        aria-label="中国风物地图，定位新疆与伽师新梅"
+      ></div>
+      <div class="entry__legend" aria-label="地图图例">
+        <span class="entry__legend-item"><i class="entry__legend-dot"></i>特色物产</span>
+        <span class="entry__legend-item">
+          <button class="entry__legend-meimei" type="button" data-meimei-preview aria-label="放大查看梅梅">
+            <img class="entry__legend-star" src={`${import.meta.env.BASE_URL}assets/meimei-map-icon.png`} alt="梅梅" />
+          </button>
+          <span>伽师新梅</span>
+        </span>
+        <span class="entry__legend-tip">悬停省域查看名称</span>
+      </div>
+      <div class="entry__tools" aria-label="地图浏览">
+          <span class="entry__mode" data-map-mode>全国</span>
+        <button type="button" data-map-zoom-in aria-label="放大地图">＋</button>
+        <button type="button" data-map-zoom-out aria-label="缩小地图">－</button>
+      </div>
+      <aside class="entry__places" data-xj-panel hidden>
+        <div class="entry__places-head">
+          <div>
+            <p class="entry__places-kicker">新疆物产 · 24 个地市</p>
+            <p class="entry__places-title">从城市看物产</p>
+          </div>
+          <span class="entry__places-mark">疆</span>
+        </div>
+        <p class="entry__places-hint">点击城市，查看代表物产</p>
+        <div class="entry__places-list" data-xj-list></div>
+      </aside>
+    </main>
+
+    <div class="entry__info" aria-live="polite">
+      <p class="entry__info-main" data-entry-main>先从中国，找到伽师</p>
+      <p class="entry__info-sub" data-entry-sub>悬停查看省名 · 点击新疆进入下一级地图 · 点击梅梅进入首页</p>
+      <button class="entry__reset" type="button" data-map-reset hidden>回到中国</button>
+    </div>
+
+    <p class="entry__note">地图标注各地代表性物产</p>
+    <div class="entry__meimei-dialog" data-meimei-dialog hidden role="dialog" aria-modal="true" aria-label="梅梅预览">
+      <button class="entry__meimei-close" type="button" data-meimei-close aria-label="关闭梅梅预览">×</button>
+      <img src={`${import.meta.env.BASE_URL}assets/meimei-map-icon.png`} alt="梅梅·伽师新梅" />
+      <p>梅梅 · 伽师新梅</p>
+    </div>
+  </body>
+</html>
+
+<style>
+  .entry {
+    --entry-map-fill: #e8dff0;
+    --entry-map-hover: #d4c5e8;
+    --entry-map-selected: #d0bad8;
+    --entry-map-line: var(--c-line);
+    --entry-paper: var(--c-white);
+    --entry-plum: var(--c-plum);
+    --entry-muted: var(--c-muted);
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    display: grid;
+    grid-template-rows: auto minmax(300px, 1fr) auto auto;
+    gap: 0.6rem;
+    padding: clamp(1rem, 0.6rem + 2vw, 2.2rem) clamp(1rem, 0.8rem + 2vw, 3rem) 1rem;
+    background:
+      radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.82), transparent 42%),
+      linear-gradient(180deg, #f7f3ec 0%, var(--c-mist) 100%);
+    color: var(--entry-ink, var(--c-plum-deep));
+    font-family: var(--font-body);
+  }
+  .entry__head { text-align: center; animation: entryUp 0.9s var(--ease) both; }
+  .entry__kicker { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--c-gold); margin: 0 0 0.55rem; }
+  .entry__title {
+    font-family: var(--font-title);
+    font-size: clamp(2.4rem, 1.6rem + 3.4vw, 4.4rem);
+    margin: 0;
+    line-height: 1.05;
+    color: var(--entry-plum);
+  }
+  .entry__sub { font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.05rem); color: var(--entry-muted); margin: 0.35rem 0 0; }
+  .entry__stage {
+    position: relative;
+    height: 100%;
+    min-height: 300px;
+    border-block: 1px solid color-mix(in srgb, var(--c-line) 82%, transparent);
+    animation: entryMap 1.4s var(--ease) 0.15s both;
+  }
+  .entry__map { position: relative; height: 100%; min-height: 300px; }
+  .entry__map { transition: transform 0.35s var(--ease), opacity 0.35s var(--ease); }
+  .entry.is-entering .entry__map { transform: scale(1.025); opacity: 0.72; }
+  .entry.is-xj-transition .entry__map { transform: scale(1.04); opacity: 0.82; }
+  .entry__places {
+    position: absolute;
+    z-index: 5;
+    top: 50%;
+    right: 0.4rem;
+    width: clamp(225px, 24vw, 300px);
+    max-height: min(72%, 480px);
+    overflow: auto;
+    padding: 1rem;
+    border: 1px solid var(--c-line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--entry-paper) 94%, transparent);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+    transform: translateY(-50%);
+    animation: entryUp 0.5s var(--ease) both;
+  }
+  .entry__places[hidden] { display: none; }
+  .entry__places-head { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; }
+  .entry__places-kicker { margin: 0 0 0.15rem; color: var(--c-gold); font-size: 0.62rem; letter-spacing: 0.12em; }
+  .entry__places-title { margin: 0; color: var(--entry-plum); font-family: var(--font-title); font-size: 1.15rem; }
+  .entry__places-mark { display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid var(--c-gold); border-radius: 50%; color: var(--c-gold); font-family: var(--font-title); }
+  .entry__places-hint { margin: 0.25rem 0 0.75rem; color: var(--entry-muted); font-size: 0.72rem; }
+  .entry__places-list { display: grid; grid-template-columns: 1fr; gap: 0.28rem; }
+  .entry__place {
+    appearance: none;
+    width: 100%;
+    border: 0;
+    text-align: left;
+    font: inherit;
+    background: color-mix(in srgb, var(--entry-plum) 5%, transparent) !important;
+    color: var(--entry-plum) !important;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.55rem;
+    padding: 0.35rem 0.45rem;
+    border-radius: 0.45rem;
+    color: var(--entry-plum);
+    font-size: 0.74rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .entry__place:hover, .entry__place:focus-visible, .entry__place.is-active { background: color-mix(in srgb, var(--c-gold) 18%, var(--entry-paper)) !important; color: var(--entry-plum) !important; }
+  .entry__place:focus-visible { outline: 2px solid var(--c-gold); outline-offset: 1px; }
+  .entry__place-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .entry__place-product { color: var(--entry-muted); white-space: nowrap; }
+  .entry__info { text-align: center; animation: entryUp 0.9s var(--ease) 0.4s both; }
+  .entry__info-main { font-family: var(--font-title); font-size: clamp(1.05rem, 0.95rem + 0.7vw, 1.35rem); margin: 0; color: var(--entry-plum); }
+  .entry__info-main .hl { color: var(--c-gold); }
+  .entry__info-sub { margin: 0.3rem 0 0; font-size: 0.82rem; color: var(--entry-muted); }
+  .entry__enter-xj {
+    margin: 0.7rem 0 0;
+    padding: 0.55rem 1.15rem;
+     border: 1px solid var(--c-gold);
+     border-radius: 3px;
+     background: var(--c-gold);
+     color: #fff;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+     box-shadow: none;
+    transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+  }
+   .entry__enter-xj:hover { transform: translateY(-2px); background: #c79c58; }
+  .entry__enter-xj[hidden] { display: none; }
+  .entry__reset {
+    margin: 0.65rem 0 0;
+    padding: 0.42rem 0.9rem;
+    border: 1px solid var(--c-line);
+     border-radius: 3px;
+    background: color-mix(in srgb, var(--entry-plum) 6%, var(--entry-paper));
+    color: var(--entry-plum);
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .entry__reset:hover { background: color-mix(in srgb, var(--entry-plum) 12%, var(--entry-paper)); border-color: var(--c-gold); }
+  .entry__reset[hidden] { display: none; }
+  .entry__note { text-align: center; font-size: 0.72rem; color: var(--entry-muted); margin: 0.4rem 0 0; }
+  .entry__legend {
+    position: absolute;
+    left: 0.35rem;
+    bottom: 0.55rem;
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--c-line);
+    border-radius: 0.65rem;
+    background: color-mix(in srgb, var(--entry-paper) 86%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--entry-muted);
+    font-size: 0.68rem;
+  }
+  .entry__legend-item { display: inline-flex; align-items: center; gap: 0.42rem; }
+  .entry__legend-tip { padding-top: 0.18rem; border-top: 1px solid var(--c-line); color: var(--entry-muted); font-size: 0.62rem; }
+  .entry__legend-dot { width: 0.52rem; height: 0.52rem; display: inline-block; border-radius: 50%; background: var(--c-jade); box-shadow: 0 0 8px color-mix(in srgb, var(--c-jade) 55%, transparent); }
+  .entry__legend-meimei { width: 1.35rem; height: 1.35rem; display: grid; place-items: center; flex: 0 0 auto; padding: 0; border: 1px solid var(--c-gold); border-radius: 50%; background: var(--c-gold-soft); cursor: zoom-in; overflow: hidden; transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+  .entry__legend-meimei:hover, .entry__legend-meimei:focus-visible { transform: scale(1.1); box-shadow: 0 4px 12px rgba(48,37,43,0.16); outline: none; }
+  .entry__legend-star { width: 100%; height: 100%; display: block; object-fit: contain; }
+  .entry__meimei-dialog { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 2rem; background: rgba(49, 32, 57, 0.74); backdrop-filter: blur(8px); }
+  .entry__meimei-dialog[hidden] { display: none; }
+  .entry__meimei-dialog img { width: min(58vw, 360px); max-height: 68vh; object-fit: contain; filter: drop-shadow(0 20px 28px rgba(20,12,25,0.3)); }
+  .entry__meimei-dialog p { position: absolute; bottom: 2rem; margin: 0; color: #fffaf3; font-family: var(--font-title); font-size: 1.1rem; }
+  .entry__meimei-close { position: absolute; top: 1.2rem; right: 1.4rem; width: 2.5rem; height: 2.5rem; border: 1px solid rgba(255,255,255,0.55); border-radius: 50%; background: rgba(255,255,255,0.12); color: #fff; font-size: 1.6rem; line-height: 1; cursor: pointer; }
+  .entry__tools { position: absolute; right: 0.35rem; bottom: 0.55rem; display: flex; align-items: center; gap: 0.3rem; }
+  .entry__mode { margin-right: 0.25rem; padding: 0.38rem 0.58rem; border: 1px solid var(--c-line); border-radius: 999px; color: var(--entry-muted); background: color-mix(in srgb, var(--entry-paper) 88%, transparent); font-size: 0.68rem; }
+  .entry__tools button { width: 1.8rem; height: 1.8rem; padding: 0; border: 1px solid var(--c-line); border-radius: 50%; background: var(--entry-paper); color: var(--entry-plum); font-size: 1.05rem; line-height: 1; cursor: pointer; }
+  .entry__tools button:hover, .entry__tools button:focus-visible { background: var(--c-gold); border-color: var(--c-gold); color: #fff; }
+  .entry__info { max-width: min(92vw, 860px); margin-inline: auto; }
+  .entry__info-sub { line-height: 1.55; text-wrap: balance; }
+  @media (max-width: 700px) {
+    .entry { grid-template-rows: auto minmax(360px, 1fr) auto auto; }
+    .entry__stage, .entry__map { min-height: 360px; }
+    .entry__places { top: auto; right: 0.35rem; bottom: 0.35rem; left: 0.35rem; width: auto; max-height: 38%; padding: 0.65rem; transform: none; }
+    .entry__places-title { font-size: 0.95rem; }
+    .entry__places-hint { margin-bottom: 0.4rem; }
+    .entry__places-list { grid-template-columns: 1fr 1fr; gap: 0.12rem 0.35rem; }
+    .entry__place { padding: 0.25rem; font-size: 0.65rem; }
+    .entry__places-mark { width: 1.65rem; height: 1.65rem; font-size: 0.82rem; }
+    .entry__legend { left: 0.1rem; bottom: 0.25rem; }
+    .entry__legend-tip { display: none; }
+    .entry__tools { right: 0.1rem; bottom: 0.25rem; }
+    .entry__mode { display: none; }
+  }
+  @media screen and (min-width: 1000px) and (orientation: landscape) {
+    .entry {
+      height: 100dvh;
+      min-height: 100dvh;
+      overflow: hidden;
+      grid-template-rows: auto minmax(0, 1fr) auto auto;
+      gap: 0.35rem;
+      padding: 0.7rem clamp(1.4rem, 3vw, 3.2rem) 0.55rem;
+    }
+    .entry__head { line-height: 1.2; }
+    .entry__kicker { font-size: 0.68rem; margin-bottom: 0.28rem; }
+    .entry__title { font-size: clamp(2.35rem, 4.2vw, 3.8rem); }
+    .entry__sub { font-size: 0.94rem; margin-top: 0.18rem; }
+    .entry__stage, .entry__map { min-height: 0; }
+    .entry__info-main { font-size: clamp(1.05rem, 1rem + 0.45vw, 1.3rem); }
+    .entry__info-sub { font-size: 0.8rem; margin-top: 0.12rem; }
+    .entry__info-sub { max-width: 52rem; margin-inline: auto; }
+    .entry__note { font-size: 0.68rem; margin-top: 0.15rem; }
+    .entry__legend { left: 0.45rem; bottom: 0.45rem; font-size: 0.74rem; padding: 0.6rem 0.75rem; }
+    .entry__tools { right: 0.45rem; bottom: 0.45rem; gap: 0.38rem; }
+    .entry__mode { font-size: 0.74rem; padding: 0.4rem 0.62rem; }
+    .entry__tools button { width: 2rem; height: 2rem; font-size: 1.1rem; }
+    .entry__places { width: clamp(250px, 23vw, 320px); max-height: min(76%, 500px); padding: 1.05rem; }
+    .entry__places-kicker { font-size: 0.68rem; }
+    .entry__places-title { font-size: 1.22rem; }
+    .entry__places-hint { font-size: 0.76rem; }
+    .entry__place { font-size: 0.78rem; padding: 0.4rem 0.48rem; }
+  }
+  @media screen and (min-width: 1000px) and (max-height: 700px) and (orientation: landscape) {
+    .entry { padding-top: 0.45rem; padding-bottom: 0.35rem; }
+    .entry__title { font-size: clamp(2.1rem, 3.6vw, 3rem); }
+    .entry__sub { font-size: 0.88rem; }
+    .entry__info-main { font-size: 1rem; }
+    .entry__places { max-height: 70%; padding: 0.8rem; }
+    .entry__places-list { gap: 0.18rem; }
+    .entry__place { padding-block: 0.3rem; }
+  }
+  @keyframes entryUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes entryMap { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .entry__head, .entry__map, .entry__info { animation: none; }
+  }
+</style>
+
+<script>
+  import * as echarts from 'echarts';
+
+  function entryInit() {
+    const el = document.getElementById('entry-map');
+    if (!el || el.dataset.bound === '1') return;
+    el.dataset.bound = '1';
+    const products = JSON.parse(el.dataset.products || '[]');
+    const xinjiangProducts = JSON.parse(el.dataset.xinjiang || '[]');
+    const star = JSON.parse(el.dataset.star || '{}');
+    const infoMain = document.querySelector('[data-entry-main]');
+    const infoSub = document.querySelector('[data-entry-sub]');
+    const resetButton = document.querySelector('[data-map-reset]');
+    const modeLabel = document.querySelector('[data-map-mode]');
+    const zoomInButton = document.querySelector('[data-map-zoom-in]');
+    const zoomOutButton = document.querySelector('[data-map-zoom-out]');
+    const xinjiangPanel = document.querySelector('[data-xj-panel]');
+    const xinjiangList = document.querySelector('[data-xj-list]');
+    const root = document.querySelector('.entry');
+    const meimeiOpen = document.querySelector('[data-meimei-preview]');
+    const meimeiDialog = document.querySelector('[data-meimei-dialog]');
+    const meimeiClose = document.querySelector('[data-meimei-close]');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const closeMeimei = () => { if (meimeiDialog) meimeiDialog.hidden = true; };
+    meimeiOpen?.addEventListener('click', () => { if (meimeiDialog) meimeiDialog.hidden = false; });
+    meimeiClose?.addEventListener('click', closeMeimei);
+    meimeiDialog?.addEventListener('click', (event) => { if (event.target === meimeiDialog) closeMeimei(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMeimei(); });
+    let entering = false;
+    let selectedProvince = '';
+    let selectedCity = '';
+    let mode = 'china';
+    let chinaGeo = null;
+    let xinjiangGeo = null;
+    let currentView = { center: [104, 35], zoom: 1.15 };
+    let viewFrame = 0;
+    let provinceTimer = 0;
+
+    const chinaNames = {
+      110000: '北京市', 120000: '天津市', 130000: '河北省', 140000: '山西省',
+      150000: '内蒙古自治区', 210000: '辽宁省', 220000: '吉林省', 230000: '黑龙江省',
+      310000: '上海市', 320000: '江苏省', 330000: '浙江省', 340000: '安徽省',
+      350000: '福建省', 360000: '江西省', 370000: '山东省', 410000: '河南省',
+      420000: '湖北省', 430000: '湖南省', 440000: '广东省', 450000: '广西壮族自治区',
+      460000: '海南省', 500000: '重庆市', 510000: '四川省', 520000: '贵州省',
+      530000: '云南省', 540000: '西藏自治区', 610000: '陕西省', 620000: '甘肃省',
+      630000: '青海省', 640000: '宁夏回族自治区', 650000: '新疆维吾尔自治区',
+      710000: '台湾省', 810000: '香港特别行政区', 820000: '澳门特别行政区'
+    };
+    const xinjiangNames = {
+      650100: '乌鲁木齐市', 650200: '克拉玛依市', 650400: '吐鲁番市', 650500: '哈密市',
+      652300: '昌吉回族自治州', 652700: '博尔塔拉蒙古自治州', 652800: '巴音郭楞蒙古自治州',
+      652900: '阿克苏地区', 653000: '克孜勒苏柯尔克孜自治州', 653100: '喀什地区',
+      653200: '和田地区', 654000: '伊犁哈萨克自治州', 654200: '塔城地区', 654300: '阿勒泰地区',
+      659001: '石河子市', 659002: '阿拉尔市', 659003: '图木舒克市', 659004: '五家渠市',
+      659005: '北屯市', 659006: '铁门关市', 659007: '双河市', 659008: '可克达拉市',
+      659009: '昆玉市', 659010: '胡杨河市'
+    };
+
+    function restoreGeoNames(geo, names) {
+      geo.features.forEach((feature) => {
+        const name = names[feature.properties?.adcode];
+        if (name) feature.properties.name = name;
+      });
+      return geo;
+    }
+
+    const chart = echarts.init(el);
+    window.addEventListener('resize', () => chart.resize());
+
+    Promise.all([fetch(`${import.meta.env.BASE_URL}geo/china.json`).then((r) => r.json()), fetch(`${import.meta.env.BASE_URL}geo/xinjiang.json`).then((r) => r.json())])
+      .then(([china, xinjiang]) => {
+        chinaGeo = restoreGeoNames(china, chinaNames);
+        xinjiangGeo = restoreGeoNames(xinjiang, xinjiangNames);
+        echarts.registerMap('china', chinaGeo);
+        echarts.registerMap('xinjiang', xinjiangGeo);
+        paintMap(false);
+      })
+      .catch(() => { if (infoMain) infoMain.textContent = '地图数据加载失败，请刷新重试。'; });
+
+    function centroid(feature) {
+      let x = 0, y = 0, count = 0;
+      const walk = (coords) => {
+        if (typeof coords[0] === 'number') { x += coords[0]; y += coords[1]; count += 1; return; }
+        coords.forEach(walk);
+      };
+      if (feature?.geometry?.coordinates) walk(feature.geometry.coordinates);
+      return count ? [x / count, y / count] : null;
+    }
+
+    function provinceBounds(feature) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      const walk = (coords) => {
+        if (typeof coords[0] === 'number') {
+          minX = Math.min(minX, coords[0]); maxX = Math.max(maxX, coords[0]);
+          minY = Math.min(minY, coords[1]); maxY = Math.max(maxY, coords[1]);
+          return;
+        }
+        coords.forEach(walk);
+      };
+      if (feature?.geometry?.coordinates) walk(feature.geometry.coordinates);
+      return minX === Infinity ? null : [[minX, minY], [maxX, maxY]];
+    }
+
+    function regionLabel(name, localMode) {
+      if (localMode) return name.replace(/柯尔克孜自治州|蒙古自治州|自治州|地区|市/g, '');
+      return name.replace(/维吾尔自治区|壮族自治区|回族自治区|自治区|特别行政区|省|市/g, '');
+    }
+
+    function regionLabelOffset(name, localMode) {
+      if (localMode) {
+        return {
+          '乌鲁木齐市': [0, -8],
+          '克拉玛依市': [0, -8],
+          '吐鲁番市': [0, 8],
+          '哈密市': [0, -8],
+          '昌吉回族自治州': [0, -8],
+          '博尔塔拉蒙古自治州': [0, -8],
+          '巴音郭楞蒙古自治州': [0, -8],
+          '阿克苏地区': [0, -8],
+          '克孜勒苏柯尔克孜自治州': [0, -8],
+          '喀什地区': [0, -8],
+          '和田地区': [0, -8],
+          '伊犁哈萨克自治州': [0, -8],
+          '塔城地区': [0, -8],
+          '阿勒泰地区': [0, -8],
+          '石河子市': [0, -8],
+          '阿拉尔市': [0, -8],
+          '图木舒克市': [0, -8],
+          '五家渠市': [0, -8],
+          '北屯市': [0, -8],
+          '铁门关市': [0, -8],
+          '双河市': [0, -8],
+          '可克达拉市': [0, -8],
+          '昆玉市': [0, -8],
+          '胡杨河市': [0, -8]
+        }[name] || [0, 0];
+      }
+      return {
+        '北京市': [8, 2],
+        '天津市': [10, 6],
+        '上海市': [8, 5],
+        '江苏省': [5, -2],
+        '浙江省': [8, 5],
+        '福建省': [7, 5],
+        '广东省': [2, 5],
+        '海南省': [0, 6],
+        '香港特别行政区': [10, 6],
+        '澳门特别行政区': [10, 10]
+      }[name] || [0, 0];
+    }
+
+    function regionPoint(name, feature, localMode) {
+      if (localMode) {
+        const product = xinjiangProducts.find((item) => item.city === name);
+        if (product) return product.coord;
+      }
+      return centroid(feature);
+    }
+
+    function focusView(feature) {
+      const bounds = provinceBounds(feature);
+      if (!bounds) return { center: [104, 35], zoom: 1.15 };
+      const [[minX, minY], [maxX, maxY]] = bounds;
+      const width = Math.max(maxX - minX, 1.2);
+      const height = Math.max(maxY - minY, 1.2);
+      const zoom = Math.max(1.45, Math.min(4.2, Math.min(62 / width, 36 / height) * 0.68));
+      return { center: [(minX + maxX) / 2, (minY + maxY) / 2], zoom };
+    }
+
+    function animateView(nextView, animate) {
+      cancelAnimationFrame(viewFrame);
+      const start = { center: [...currentView.center], zoom: currentView.zoom };
+      if (!animate || reduce) {
+        currentView = nextView;
+        chart.setOption({ geo: { center: nextView.center, zoom: nextView.zoom } });
+        return;
+      }
+      const startedAt = performance.now();
+      const duration = 650;
+      const tick = (now) => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const center = start.center.map((value, index) => value + (nextView.center[index] - value) * eased);
+        const zoom = start.zoom + (nextView.zoom - start.zoom) * eased;
+        chart.setOption({ geo: { center, zoom } });
+        if (progress < 1) viewFrame = requestAnimationFrame(tick);
+        else currentView = nextView;
+      };
+      viewFrame = requestAnimationFrame(tick);
+    }
+
+    function paintMap(animate = true) {
+      if (!chinaGeo) return;
+      const localMode = mode === 'xinjiang';
+      const mapGeo = localMode ? xinjiangGeo : chinaGeo;
+      const mapName = localMode ? 'xinjiang' : 'china';
+      const targetName = localMode ? selectedCity : selectedProvince;
+      const target = mapGeo.features.find((feature) => feature.properties.name === targetName);
+      const product = localMode
+        ? xinjiangProducts.find((item) => item.city === selectedCity)
+        : products.find((item) => item.province === selectedProvince);
+      const defaultView = localMode ? { center: [86, 42.5], zoom: 1.15 } : { center: [104, 35], zoom: 1.15 };
+      const nextView = target ? focusView(target) : mode === 'china-flight'
+        ? { center: [86, 42.5], zoom: 3.1 }
+        : defaultView;
+      const mapData = mapGeo.features.map((feature) => ({
+        name: feature.properties.name,
+        itemStyle: feature.properties.name === targetName
+          ? { areaColor: '#d0bad8', borderColor: '#6b344d', borderWidth: 1.6, shadowBlur: 0, shadowColor: 'transparent' }
+          : { areaColor: '#e8dff0', borderColor: '#d8d0c5', borderWidth: 0.8 }
+      }));
+      const visibleProducts = localMode
+        ? xinjiangProducts.filter((item) => item.name !== star.name)
+        : products;
+      const series = [{
+        name: localMode ? '新疆地州市' : '省级区域', type: 'map', map: mapName, geoIndex: 0, data: mapData,
+         label: {
+           show: false,
+           position: 'inside',
+           formatter: (params) => localMode ? params.name : regionLabel(params.name, false),
+           color: '#6e6178',
+           fontSize: localMode ? (window.innerWidth <= 700 ? 7 : 8) : (window.innerWidth <= 700 ? 7 : 8),
+           fontWeight: 400,
+           textBorderColor: 'rgba(48,37,43,0.82)',
+           textBorderWidth: 2.4,
+           hideOverlap: false
+         },
+         labelLayout: { hideOverlap: false },
+         emphasis: {
+           show: true,
+           focus: 'self',
+           itemStyle: {
+              areaColor: '#d4c5e8',
+              borderColor: '#d8d0c5',
+              borderWidth: 0.8,
+              shadowBlur: 0,
+              shadowColor: 'transparent'
+           },
+            label: {
+              show: true,
+              position: 'inside',
+              formatter: (params) => regionLabel(params.name, localMode),
+              color: '#6b344d',
+              fontWeight: 700,
+              backgroundColor: 'rgba(255,255,255,0.94)',
+              borderColor: 'rgba(196,181,217,0.9)',
+              borderWidth: 1,
+              borderRadius: 999,
+              padding: [3, 7],
+              textBorderWidth: 0,
+              fontSize: localMode ? 10 : 11
+            }
+         },
+         select: { disabled: true },
+         blur: { itemStyle: { opacity: 0.72 } },
+         cursor: 'pointer'
+      }, {
+        name: localMode ? '新疆地市物产' : '省级物产', type: 'scatter', coordinateSystem: 'geo',
+        data: visibleProducts.map((item) => {
+          const isSelected = localMode ? item.city === selectedCity : item.province === selectedProvince;
+          return {
+            name: item.name,
+            value: item.coord,
+            city: item.city,
+            province: item.province,
+            note: item.note,
+            itemStyle: isSelected ? { color: '#b58a45', borderColor: '#fff', borderWidth: 1.8, shadowBlur: 10, shadowColor: 'rgba(181,138,69,0.36)' } : undefined,
+            label: isSelected ? { show: true, fontSize: localMode ? 11 : 12, color: '#6b344d', fontWeight: 700 } : undefined
+          };
+        }),
+        symbolSize: (value, params) => {
+          const item = visibleProducts[params.dataIndex];
+          const isSelected = localMode ? item?.city === selectedCity : item?.province === selectedProvince;
+          return isSelected ? (localMode ? 13 : 14) : (localMode ? 8 : 9);
+        },
+        itemStyle: { color: '#7cb342', borderColor: '#fff', borderWidth: 1.2, shadowBlur: 9, shadowColor: 'rgba(124,179,66,0.45)' },
+         label: { show: true, position: 'right', distance: 4, formatter: '{b}', fontSize: 11, color: '#5a4a6a', textBorderColor: 'transparent', textBorderWidth: 0, textShadowColor: 'rgba(255,255,255,0.45)', textShadowBlur: 2, fontWeight: 600, hideOverlap: true },
+        labelLayout: { hideOverlap: true },
+         tooltip: {
+           trigger: 'item',
+           backgroundColor: '#fff',
+           borderColor: '#d8d0c5',
+           borderWidth: 1,
+           textStyle: { color: '#6b344d', fontSize: 12 },
+           formatter: (params) => `<strong>${params.data?.city || params.data?.province || ''}</strong><br>${params.name}<br>${params.data?.note || ''}`
+         },
+        emphasis: { scale: 1.25, label: { show: true, color: '#6b344d', fontWeight: 700 }, itemStyle: { color: '#8ba56b' } },
+        zlevel: 2, cursor: 'pointer'
+      }];
+      const regionNames = mapGeo.features.map((feature) => {
+        const name = feature.properties.name;
+        const isSelected = name === targetName;
+        return {
+          name: regionLabel(name, localMode),
+          value: regionPoint(name, feature, localMode),
+          region: name,
+          itemStyle: { color: 'transparent' },
+          label: isSelected ? {
+            show: isSelected && localMode,
+            offset: regionLabelOffset(name, localMode),
+            color: '#ffd98a',
+            fontWeight: 700,
+            backgroundColor: 'rgba(91,44,111,0.92)',
+            borderColor: '#d8a85a',
+            borderWidth: 1,
+            borderRadius: 999,
+            padding: [3, 7]
+          } : {
+            show: false,
+            position: localMode ? 'top' : 'right',
+            distance: localMode ? 5 : 0,
+            offset: regionLabelOffset(name, localMode),
+             color: '#6b344d',
+            fontSize: localMode ? (window.innerWidth <= 700 ? 7 : 8) : (window.innerWidth <= 700 ? 8 : 9),
+            fontWeight: 500,
+            textBorderColor: 'rgba(48,37,43,0.92)',
+            textBorderWidth: 2.5
+          }
+        };
+      }).filter((item) => item.value && (localMode || item.region !== '新疆维吾尔自治区'));
+      series.splice(1, 0, {
+        name: localMode ? '新疆地市名称' : '省份名称',
+        type: 'scatter',
+        coordinateSystem: 'geo',
+        data: regionNames,
+        symbol: 'circle',
+        symbolSize: localMode ? 4 : 5,
+        silent: false,
+        itemStyle: { color: 'transparent', borderColor: 'transparent', borderWidth: 0 },
+         label: {
+           show: false,
+           formatter: '{b}',
+           color: '#6b344d',
+           fontSize: localMode ? (window.innerWidth <= 700 ? 7 : 8) : (window.innerWidth <= 700 ? 8 : 9),
+           fontWeight: 500,
+           textBorderColor: 'rgba(48,37,43,0.92)',
+           textBorderWidth: 2.5,
+           hideOverlap: false
+         },
+         labelLayout: { hideOverlap: false },
+        emphasis: {
+          scale: 1.12,
+          itemStyle: { color: 'rgba(255,217,138,0.12)' },
+           label: {
+             show: false
+          }
+        },
+        tooltip: { show: false },
+        zlevel: 2,
+        cursor: 'pointer'
+      });
+      if (!localMode) {
+        const xinjiangFeature = chinaGeo.features.find((feature) => feature.properties.name === '新疆维吾尔自治区');
+        const xinjiangCenter = centroid(xinjiangFeature) || [85, 42.5];
+        series.push({
+          name: '新疆省份名称', type: 'scatter', coordinateSystem: 'geo',
+          data: [{ name: '新疆', value: xinjiangCenter, province: '新疆维吾尔自治区' }],
+          symbolSize: 2,
+          itemStyle: { color: 'transparent' },
+          label: {
+            show: true, position: 'inside', formatter: '新疆',
+            color: '#fffaf3', fontSize: window.innerWidth <= 700 ? 10 : 12, fontWeight: 700,
+            backgroundColor: '#6b344d', borderColor: '#b58a45', borderWidth: 1,
+            borderRadius: 999, padding: [4, 9], textBorderWidth: 0
+          },
+          emphasis: { label: { color: '#fff', backgroundColor: '#6b344d', borderWidth: 1 } },
+          tooltip: { show: false }, zlevel: 3, cursor: 'pointer'
+        });
+      }
+      if (star?.coord) series.push({
+        name: '重点', type: 'scatter', coordinateSystem: 'geo',
+        data: [{ name: star.name, value: star.coord, province: '新疆维吾尔自治区', city: '喀什地区', note: '新疆特色果品 · 重点推荐' }],
+        symbol: `image://${import.meta.env.BASE_URL}assets/meimei-map.png`, symbolSize: 40,
+        itemStyle: { shadowBlur: 18, shadowColor: 'rgba(255,217,138,0.8)' },
+        label: { show: true, position: 'top', distance: 7, formatter: star.name, fontSize: 15, fontWeight: 700, color: '#6b344d', textBorderColor: 'transparent', textBorderWidth: 0, textShadowColor: 'rgba(255,255,255,0.45)', textShadowBlur: 2 },
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: '#fff',
+          borderColor: '#d8d0c5',
+          borderWidth: 1,
+          textStyle: { color: '#6b344d', fontSize: 12 },
+          formatter: (params) => `<strong>${params.data?.province || ''}</strong><br>${params.name}<br>${params.data?.note || ''}`
+        },
+        zlevel: 3, cursor: 'pointer'
+      });
+
+      const option = {
+        backgroundColor: 'transparent',
+        geo: {
+          map: mapName, roam: true, silent: false,
+          layoutCenter: localMode ? [window.innerWidth <= 700 ? '50%' : '42%', window.innerWidth <= 700 ? '42%' : '50%'] : ['50%', '50%'],
+          layoutSize: localMode ? (window.innerWidth <= 700 ? '78%' : '86%') : '94%',
+          itemStyle: { areaColor: '#e8dff0', borderColor: '#d8d0c5', borderWidth: 0.8 },
+          emphasis: {
+            disabled: false,
+            itemStyle: {
+              areaColor: '#d4c5e8',
+              borderColor: '#d8d0c5',
+              borderWidth: 0.8,
+              shadowBlur: 0,
+              shadowColor: 'transparent'
+            }
+          },
+          label: { show: false },
+          center: currentView.center,
+          zoom: currentView.zoom
+        },
+        series,
+        animation: animate && !reduce,
+        animationDurationUpdate: animate && !reduce ? 700 : 0,
+        animationEasingUpdate: 'cubicInOut'
+      };
+      chart.setOption(option, { notMerge: true });
+      animateView(nextView, animate);
+      if (modeLabel) modeLabel.textContent = localMode ? '新疆' : selectedProvince ? '定位' : '全国';
+      if (resetButton) {
+        resetButton.hidden = !selectedProvince && !localMode;
+        const returnLabel = localMode && selectedCity ? '回到新疆' : '回到中国';
+        resetButton.textContent = returnLabel;
+        resetButton.setAttribute('aria-label', `${returnLabel}地图`);
+      }
+      if (xinjiangPanel) xinjiangPanel.hidden = !localMode;
+      if (xinjiangList && localMode && xinjiangList.childElementCount === 0) {
+        xinjiangProducts.forEach((item) => {
+          const row = document.createElement('button');
+          row.type = 'button';
+          row.setAttribute('aria-label', `${item.city}：${item.name}`);
+          row.className = 'entry__place';
+          row.dataset.city = item.city;
+          const city = document.createElement('span');
+          city.className = 'entry__place-name';
+          city.textContent = item.city.replace(/自治州|蒙古自治州|柯尔克孜自治州|地区|市/g, '');
+          const name = document.createElement('span');
+          name.className = 'entry__place-product';
+          name.textContent = item.name;
+          row.append(city, name);
+          xinjiangList.append(row);
+        });
+      }
+      xinjiangList?.querySelectorAll('.entry__place').forEach((row) => row.classList.toggle('is-active', row.dataset.city === selectedCity));
+      if (localMode && product) {
+        if (infoMain) infoMain.innerHTML = '<span class="hl">' + product.city + '</span> · ' + product.name;
+        if (infoSub) infoSub.textContent = product.note;
+      } else if (selectedProvince && product) {
+        if (infoMain) infoMain.innerHTML = '<span class="hl">' + product.province + '</span> · ' + product.name;
+        if (infoSub) infoSub.textContent = product.note;
+      } else {
+        if (infoMain) infoMain.textContent = localMode ? '新疆风物坐标' : '先从中国，找到伽师';
+        if (infoSub) infoSub.textContent = localMode ? '点击城市，查看代表物产' : '悬停查看省名 · 点击新疆进入下一级地图 · 点击梅梅进入首页';
+      }
+    }
+
+    function zoomMap(delta) {
+      const min = mode === 'xinjiang' ? 0.85 : 0.92;
+      const max = mode === 'xinjiang' ? 3.8 : 2.2;
+      const next = Math.max(min, Math.min(max, currentView.zoom + delta));
+      animateView({ center: [...currentView.center], zoom: next }, true);
+    }
+
+    zoomInButton?.addEventListener('click', () => zoomMap(0.2));
+    zoomOutButton?.addEventListener('click', () => zoomMap(-0.2));
+
+    function enterXinjiang() {
+      if (mode !== 'china' || selectedProvince !== '新疆维吾尔自治区') return;
+      window.clearTimeout(provinceTimer);
+      mode = 'china-flight';
+      root?.classList.add('is-xj-transition');
+      paintMap(true);
+      provinceTimer = window.setTimeout(() => {
+        if (mode !== 'china-flight') return;
+        mode = 'xinjiang';
+        selectedCity = '';
+        currentView = { center: [86, 42.5], zoom: 1.15 };
+        root?.classList.remove('is-xj-transition');
+        paintMap(false);
+      }, reduce ? 0 : 720);
+    }
+
+    resetButton?.addEventListener('click', () => {
+      window.clearTimeout(provinceTimer);
+      if (mode === 'xinjiang') {
+        if (selectedCity) {
+          selectedCity = '';
+          currentView = { center: [86, 42.5], zoom: 1.15 };
+          paintMap(true);
+          return;
+        }
+        mode = 'china';
+        selectedProvince = '';
+        currentView = { center: [104, 35], zoom: 1.15 };
+        paintMap(true);
+        return;
+      }
+      mode = 'china';
+      selectedProvince = '';
+      selectedCity = '';
+      currentView = { center: [104, 35], zoom: 1.15 };
+      paintMap(true);
+    });
+
+    xinjiangList?.addEventListener('click', (event) => {
+      const row = event.target.closest('[data-city]');
+      if (!row || mode !== 'xinjiang') return;
+      selectedCity = row.dataset.city;
+      paintMap(false);
+    });
+
+    chart.on('click', (p) => {
+      if (!p || !p.name) return;
+      if (p.seriesType === 'scatter' && p.seriesName === '重点' && p.name === star.name) {
+        if (entering) return;
+        entering = true;
+        root?.classList.add('is-entering');
+        if (infoMain) infoMain.innerHTML = '<span class="hl">伽师新梅</span> · 即将进入故事';
+        if (infoSub) infoSub.textContent = '从产地出发，继续认识风土、产业与人物';
+        window.setTimeout(() => window.location.assign(`${import.meta.env.BASE_URL}`), reduce ? 0 : 260);
+        return;
+      }
+      if (mode === 'xinjiang') {
+        if (p.seriesName === '新疆地市名称' && p.data?.region) {
+          selectedCity = p.data.region;
+          paintMap(true);
+          return;
+        }
+        const city = p.seriesType === 'scatter' ? p.data?.city : p.name;
+        if (city && xinjiangProducts.some((item) => item.city === city)) {
+          selectedCity = city;
+          paintMap(true);
+        }
+        return;
+      }
+      if (p.seriesName === '省份名称' && p.data?.region) {
+        selectedProvince = p.data.region;
+        paintMap(true);
+        if (selectedProvince === '新疆维吾尔自治区') enterXinjiang();
+        return;
+      }
+      const province = p.seriesType === 'scatter' ? p.data?.province : p.name;
+      if (province === '新疆维吾尔自治区') {
+        window.clearTimeout(provinceTimer);
+        selectedProvince = province;
+        mode = 'china';
+        paintMap(true);
+        enterXinjiang();
+      } else if (province && products.some((item) => item.province === province)) {
+        selectedProvince = province;
+        mode = 'china';
+        paintMap(true);
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', entryInit);
+  if (document.readyState !== 'loading') entryInit();
+  else document.addEventListener('DOMContentLoaded', entryInit);
+</script>
