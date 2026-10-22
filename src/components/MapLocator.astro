@@ -41,8 +41,7 @@ const levels = cfg.levels;
 </section>
 
 <script>
-  const BASE_URL = import.meta.env.BASE_URL;
-  const MAP_FILES = { china: `${BASE_URL}geo/china.json`, xinjiang: `${BASE_URL}geo/xinjiang.json`, kashi: `${BASE_URL}geo/kashi.json`, jiashi: `${BASE_URL}geo/jiashi.json` };
+  const MAP_FILES = { china: `${import.meta.env.BASE_URL}geo/china.json`, xinjiang: `${import.meta.env.BASE_URL}geo/xinjiang.json`, kashi: `${import.meta.env.BASE_URL}geo/kashi.json`, jiashi: `${import.meta.env.BASE_URL}geo/jiashi.json` };
   const HIGHLIGHT = { china: '新疆维吾尔自治区', xinjiang: '喀什地区', kashi: '伽师县', jiashi: '伽师县' };
   const LABEL_ON = {
     china: { show: true, fontSize: 9, color: 'rgba(90,80,70,0.78)' },
@@ -203,7 +202,7 @@ const levels = cfg.levels;
         type: 'scatter',
         coordinateSystem: 'geo',
         data: [{ name: '伽师新梅', value: [76.72, 39.49] }],
-        symbol: `image://${BASE_URL}assets/meimei-map.png`,
+        symbol: 'image:///assets/meimei-map.png',
         symbolSize: 30,
         itemStyle: { shadowBlur: 12, shadowColor: 'rgba(160,91,184,0.8)' },
         label: { show: true, position: 'top', formatter: '伽师新梅', fontSize: 12, fontWeight: 700, color: '#5b2c6f' },
