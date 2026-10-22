@@ -41,7 +41,8 @@ const levels = cfg.levels;
 </section>
 
 <script>
-  const MAP_FILES = { china: `${import.meta.env.BASE_URL}geo/china.json`, xinjiang: `${import.meta.env.BASE_URL}geo/xinjiang.json`, kashi: `${import.meta.env.BASE_URL}geo/kashi.json`, jiashi: `${import.meta.env.BASE_URL}geo/jiashi.json` };
+  const assetBase = '/jiashi-xinmei-site/';
+  const MAP_FILES = { china: `${assetBase}geo/china.json`, xinjiang: `${assetBase}geo/xinjiang.json`, kashi: `${assetBase}geo/kashi.json`, jiashi: `${assetBase}geo/jiashi.json` };
   const HIGHLIGHT = { china: '新疆维吾尔自治区', xinjiang: '喀什地区', kashi: '伽师县', jiashi: '伽师县' };
   const LABEL_ON = {
     china: { show: true, fontSize: 9, color: 'rgba(90,80,70,0.78)' },
