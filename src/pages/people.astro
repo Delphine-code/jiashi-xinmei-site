@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import FigureBlock from '../components/FigureBlock.astro';
+import SourceBadge from '../components/SourceBadge.astro';
+import siteData from '../data/site-data.json';
+
+const people = siteData.people;
+const { photos } = siteData;
+---
+
+  <BaseLayout title="新梅人 · 伽师新梅" description="种植大户、镇长、电商创业者、援疆干部与技术专家：伽师新梅产业背后的六个人。" theme="warm">
+  <PageHero
+    kicker="P5 / 人物"
+    title="新梅人"
+    lead="一颗新梅从枝头走向市场，要经过许多双手。六位新梅人，分别站在种植、组织、技术与流通的现场。"
+    src="S3"
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <SectionTitle no="01" title="六个人，接住一颗果" sub="从盐碱地里的第一棵树，到冷链车上的最后一箱果。" />
+      <div class="people-list" aria-label="新梅人故事列表">
+        {people.map((p, index) => (
+          <details class="people-row" data-reveal>
+            <summary>
+              <span class="people-row__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <span class="people-row__identity">
+                <span class="people-row__name">{p.name}</span>
+                <span class="people-row__role">{["种植者", "组织者", "经营者", "援疆者", "科研者", "流通者"][index]} · {p.role}</span>
+              </span>
+              <span class="people-row__quote">「{p.quote}」</span>
+              <span class="people-row__toggle" aria-hidden="true">＋</span>
+            </summary>
+            <div class="people-row__detail">
+              <p>{p.story}</p>
+              {p.src && <p class="people-row__source">采访 / 报道 <SourceBadge src={p.src} /></p>}
+            </div>
+          </details>
+        ))}
+      </div>
+      <p class="pp__instruction">点击人物行，展开现场故事。</p>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="wrap">
+      <SectionTitle no="02" title="把故事放回现场" sub="果园与采摘季，人物故事发生的地方。" />
+      <div class="grid grid--2">
+        {photos.people.map((ph) => (
+          <FigureBlock src={ph.src} alt={ph.alt} caption={ph.caption} credit={ph.credit} ratio={ph.ratio} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  </BaseLayout>
+
+<style>
+  .people-list { display: grid; max-width: 980px; border-top: 1px solid var(--c-line); }
+  .people-row { border-bottom: 1px solid var(--c-line); }
+  .people-row summary {
+    display: grid;
+    grid-template-columns: 3rem minmax(13rem, 0.7fr) minmax(0, 1.5fr) 2rem;
+    align-items: center;
+    gap: 1rem;
+    min-height: 6.25rem;
+    padding: 1rem 0.4rem;
+    cursor: pointer;
+    list-style: none;
+    transition: background 180ms var(--ease), padding 180ms var(--ease);
+  }
+  .people-row summary::-webkit-details-marker { display: none; }
+  .people-row summary:hover,
+  .people-row summary:focus-visible { background: color-mix(in srgb, var(--c-berry) 7%, transparent); padding-inline: 0.9rem; }
+  .people-row summary:focus-visible { outline: 2px solid var(--c-plum); outline-offset: -2px; }
+  .people-row[open] summary { background: color-mix(in srgb, var(--c-berry) 8%, transparent); }
+  .people-row__index { color: var(--c-berry); font-family: var(--font-num); font-size: 1rem; letter-spacing: 0.08em; }
+  .people-row__identity { display: grid; gap: 0.2rem; }
+  .people-row__name { color: var(--c-plum); font-family: var(--font-title); font-size: var(--step-1); }
+  .people-row__role { color: var(--c-muted); font-size: 0.8rem; line-height: 1.5; }
+  .people-row__quote { color: var(--c-plum-deep); font-size: 0.9rem; line-height: 1.65; }
+  .people-row__toggle { justify-self: end; color: var(--c-plum); font-size: 1.4rem; line-height: 1; transition: transform 180ms var(--ease); }
+  .people-row[open] .people-row__toggle { transform: rotate(45deg); }
+  .people-row__detail { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding: 0 3.4rem 1.2rem 4rem; }
+  .people-row__detail p { max-width: 70ch; margin: 0; color: var(--c-muted); font-size: 0.92rem; line-height: 1.8; }
+  .people-row__detail .people-row__source { align-self: end; white-space: nowrap; font-size: 0.75rem; }
+  .pp__note2 { margin-top: 1rem; max-width: 72ch; }
+  .pp__instruction { margin: 0.8rem 0 0; color: var(--c-plum); font-size: 0.8rem; letter-spacing: 0.04em; }
+  .pp__sources { margin-top: 1.35rem; border-top: 1px solid var(--c-line); padding-top: 0.8rem; }
+  .pp__sources summary { color: var(--c-plum); cursor: pointer; font-size: 0.82rem; }
+  .pp__sources summary::marker { color: var(--c-gold); }
+  @media (min-width: 880px) {
+    .people-list { margin-inline: auto; }
+  }
+  @media (max-width: 760px) {
+    .people-row summary { grid-template-columns: 2.5rem minmax(0, 1fr) 1.75rem; gap: 0.65rem; min-height: 5.5rem; }
+    .people-row__quote { grid-column: 2 / -1; grid-row: 2; font-size: 0.84rem; }
+    .people-row__toggle { grid-column: 3; grid-row: 1; }
+    .people-row__detail { grid-template-columns: 1fr; padding: 0 1rem 1rem 3.15rem; }
+    .people-row__detail .people-row__source { white-space: normal; }
+  }
+</style>

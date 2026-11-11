@@ -1,0 +1,17 @@
+{
+  "name": "jiashi-xinmei-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "echarts": "^5.5.0",
+    "gsap": "^3.12.0"
+  }
+}

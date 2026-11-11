@@ -1,0 +1,191 @@
+---
+import siteData from '../data/site-data.json';
+import SourceBadge from './SourceBadge.astro';
+const cfg = siteData.sugar;
+---
+<section class="sim" data-sugar data-cfg={JSON.stringify(cfg)} data-reveal>
+  <header class="sim__head">
+    <h3 class="sim__title">{cfg.title}</h3>
+    <p class="sim__desc">从伽师实测值出发，调整光照、温差与土壤硒含量。<SourceBadge src={cfg.src} /></p>
+  </header>
+
+  <div class="sim__grid">
+    <div class="sim__controls">
+      {cfg.params.map((p) => (
+        <div class="ctl" data-param={p.key}>
+          <div class="ctl__row">
+            <label for={'sim-' + p.key}>{p.label}</label>
+            <output class="ctl__out" data-out={p.key}>{""}</output>
+          </div>
+          <input
+            id={'sim-' + p.key}
+            type="range"
+            min={String(p.min)}
+            max={String(p.max)}
+            step={String(p.step)}
+            value={String(p.value)}
+            data-input={p.key}
+          />
+          <div class="ctl__scale">
+            <span>{p.min}{p.unit}</span>
+            {p.mark && <span class="ctl__mark">{p.mark}</span>}
+            <span>{p.max}{p.unit}</span>
+          </div>
+        </div>
+      ))}
+      <button type="button" class="sim__reset" data-reset>恢复实测值</button>
+    </div>
+
+    <div class="sim__view">
+      <div class="fruit" aria-hidden="true">
+        <span class="fruit__body" data-fruit></span>
+        <span class="fruit__leaf"></span>
+      </div>
+      <p class="sim__reading">
+        <span class="sim__num" data-brix>--</span>
+        <span class="sim__unit">度</span>
+      </p>
+      <p class="sim__hint">可溶性固形物（糖度）估算值</p>
+      <div class="gauge" aria-hidden="true">
+        <span class="gauge__band"></span>
+        <span class="gauge__pin" data-pin></span>
+      </div>
+      <p class="sim__band">伽师实测：25—28 度</p>
+      <p class="sim__compare" data-compare></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  function hexToRgb(hex) {
+    const v = hex.replace('#', '');
+    return [
+      parseInt(v.slice(0, 2), 16),
+      parseInt(v.slice(2, 4), 16),
+      parseInt(v.slice(4, 6), 16)
+    ];
+  }
+  function lerpColor(a, b, t) {
+    const ca = hexToRgb(a);
+    const cb = hexToRgb(b);
+    const out = ca.map((v, i) => Math.round(v + (cb[i] - v) * t));
+    return 'rgb(' + out.join(',') + ')';
+  }
+
+  function sugarInit() {
+    const root = document.querySelector('[data-sugar]');
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+    let cfg;
+    try { cfg = JSON.parse(root.dataset.cfg); } catch (e) { return; }
+    const params = cfg.params;
+    const inputs = {};
+    params.forEach((p) => { inputs[p.key] = root.querySelector('[data-input="' + p.key + '"]'); });
+    const outEls = {};
+    params.forEach((p) => { outEls[p.key] = root.querySelector('[data-out="' + p.key + '"]'); });
+    const brixEl = root.querySelector('[data-brix]');
+    const fruitEl = root.querySelector('[data-fruit]');
+    const pinEl = root.querySelector('[data-pin]');
+    const compareEl = root.querySelector('[data-compare]');
+    const [minB, maxB] = cfg.brixRange;
+
+    const compute = () => {
+      let score = 0;
+      params.forEach((p) => {
+        const raw = parseFloat(inputs[p.key].value);
+        const norm = (raw - p.min) / (p.max - p.min);
+        score += p.weight * Math.min(Math.max(norm, 0), 1);
+        const decimals = p.step < 1 ? (p.step < 0.1 ? 2 : 1) : 0;
+        outEls[p.key].textContent = raw.toFixed(decimals) + ' ' + p.unit;
+      });
+      const brix = minB + score * (maxB - minB);
+      const t = (brix - minB) / (maxB - minB);
+      brixEl.textContent = brix.toFixed(1);
+      fruitEl.style.background = 'radial-gradient(circle at 34% 28%, ' + lerpColor('#c6dc9a', '#a05bb8', t) + ', ' + lerpColor('#7d9c4a', '#4a2159', t) + ' 72%)';
+      fruitEl.style.transform = 'scale(' + (0.82 + t * 0.18) + ')';
+      pinEl.style.left = (t * 100).toFixed(1) + '%';
+      if (brix >= 25) compareEl.textContent = '达到伽师商品果区间';
+      else if (brix >= 21) compareEl.textContent = '接近商品果门槛';
+      else compareEl.textContent = '低于伽师商品果区间';
+    };
+
+    params.forEach((p) => inputs[p.key].addEventListener('input', compute));
+    const resetBtn = root.querySelector('[data-reset]');
+    if (resetBtn) resetBtn.addEventListener('click', () => {
+      params.forEach((p) => { inputs[p.key].value = String(p.value); });
+      compute();
+    });
+    compute();
+  }
+  document.addEventListener('astro:page-load', sugarInit);
+  if (document.readyState !== 'loading') sugarInit();
+  else document.addEventListener('DOMContentLoaded', sugarInit);
+</script>
+
+<style>
+  .sim {
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    background: var(--c-white);
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: none;
+    border-top: 3px solid var(--c-gold);
+  }
+  .sim__title { font-size: var(--step-2); margin-bottom: 0.3rem; }
+  .sim__desc { color: var(--c-muted); max-width: 56ch; }
+  .sim__grid {
+    display: grid;
+    gap: clamp(1.4rem, 1rem + 2vw, 3rem);
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+  .ctl { margin-bottom: 1.1rem; }
+  .ctl__row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.35rem; }
+  .ctl__row label { font-size: 0.94rem; color: var(--c-plum); }
+  .ctl__out { font-family: var(--font-num); font-size: 1rem; color: var(--c-plum-deep); }
+  .ctl input[type='range'] { width: 100%; accent-color: var(--c-plum); height: 1.6rem; cursor: pointer; }
+  .ctl__scale { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--c-muted); }
+  .ctl__mark { color: var(--c-gold); }
+  .sim__reset {
+    margin-top: 0.4rem;
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    border-radius: 3px;
+    padding: 0.45rem 1rem;
+    font-size: 0.86rem;
+    color: var(--c-plum);
+    cursor: pointer;
+  }
+  .sim__reset:hover { background: color-mix(in srgb, var(--c-gold) 24%, var(--c-white)); }
+  .sim__view { text-align: center; }
+  .fruit { position: relative; height: clamp(120px, 24vw, 190px); display: grid; place-items: center; }
+  .fruit__body {
+    display: block;
+    width: clamp(88px, 16vw, 130px);
+    height: clamp(104px, 19vw, 155px);
+    border-radius: 50% 50% 48% 48%;
+    box-shadow: inset -8px -10px 24px rgba(0, 0, 0, 0.18);
+    transition: background 0.35s var(--ease), transform 0.35s var(--ease);
+  }
+  .fruit__leaf {
+    position: absolute;
+    top: 6%;
+    width: 34px;
+    height: 16px;
+    border-radius: 50% 8% 50% 8%;
+    background: var(--c-jade);
+    transform: rotate(-18deg);
+  }
+  .sim__reading { font-family: var(--font-num); font-size: clamp(2.4rem, 1.6rem + 3vw, 3.6rem); color: var(--c-plum); margin: 0.4rem 0 0; line-height: 1; }
+  .sim__num { font-size: inherit; }
+  .sim__unit { font-size: 1.1rem; margin-left: 0.2rem; }
+  .sim__hint { font-size: 0.82rem; color: var(--c-muted); margin: 0.2rem 0 0.9rem; }
+  .gauge { position: relative; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--c-plum) 10%, var(--c-white)); overflow: hidden; }
+  .gauge__band { position: absolute; left: 70%; right: 0; top: 0; bottom: 0; background: color-mix(in srgb, var(--c-gold) 55%, transparent); }
+  .gauge__pin { position: absolute; top: -4px; width: 3px; height: 16px; border-radius: 2px; background: var(--c-plum); transform: translateX(-50%); transition: left 0.2s var(--ease); }
+  .sim__band { font-size: 0.78rem; color: var(--c-muted); margin: 0.6rem 0 0.5rem; }
+  .sim__compare { font-size: 0.9rem; color: var(--c-plum); min-height: 1.6em; margin: 0; }
+  @media (min-width: 820px) {
+    .sim__grid { grid-template-columns: 1.1fr 0.9fr; }
+  }
+</style>

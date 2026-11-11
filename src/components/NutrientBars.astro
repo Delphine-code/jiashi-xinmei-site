@@ -1,0 +1,59 @@
+---
+import SourceBadge from './SourceBadge.astro';
+import siteData from '../data/site-data.json';
+const nutrients = siteData.science.nutrients;
+---
+<div class="nb" data-reveal>
+  <h3 class="nb__h">含量看得见</h3>
+  <p class="nb__sub">三项有明确出处的数值用条形呈现；花青素因检测口径不统一，仍保留文字说明。</p>
+  {nutrients.map((n) => (
+    <div class="nb__row">
+      <div class="nb__head">
+        <p class="nb__name">{n.name}<span class="nb__unit">{n.unit}</span></p>
+        <p class="nb__val">{n.value}</p>
+      </div>
+      <div class="nb__barwrap">
+        <div class="nb__bar" style={`width: ${Math.round((n.value / n.max) * 100)}%`}></div>
+        {n.ref && (
+          <div class="nb__ref" style={`left: ${Math.round((n.ref.value / n.max) * 100)}%`}>
+            <span class="nb__refline"></span>
+            <span class="nb__reflab">{n.ref.label} {n.ref.value}</span>
+          </div>
+        )}
+      </div>
+      <p class="nb__note">{n.note}<SourceBadge src={n.src} /></p>
+    </div>
+  ))}
+</div>
+
+<style>
+  .nb { margin-top: 1.8rem; }
+  .nb__h { font-size: var(--step-1); color: var(--c-plum); margin: 0 0 0.2rem; }
+  .nb__sub { margin: 0 0 1.2rem; font-size: 0.86rem; color: var(--c-muted); }
+  .nb__row { margin-bottom: 1.3rem; }
+  .nb__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .nb__name { margin: 0 0 0.35rem; font-weight: 700; color: var(--c-plum); }
+  .nb__unit { font-size: 0.72rem; font-weight: 400; color: var(--c-muted); margin-left: 0.4rem; }
+  .nb__val { font-family: var(--font-num); font-size: 1.05rem; color: var(--c-plum); margin: 0; }
+  .nb__barwrap { position: relative; height: 22px; background: color-mix(in srgb, var(--c-mist) 55%, var(--c-white)); border-radius: 999px; }
+  .nb__bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--c-gold), var(--c-plum));
+    animation: nbGrow 1.2s var(--ease) both;
+    transform-origin: 0 50%;
+  }
+  .nb__ref { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--c-jade); }
+  .nb__reflab {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.72rem;
+    color: var(--c-jade);
+  }
+  .nb__note { margin: 0.5rem 0 0; font-size: 0.84rem; color: var(--c-muted); }
+  @keyframes nbGrow { from { transform: scaleX(0); } }
+  @media (prefers-reduced-motion: reduce) { .nb__bar { animation: none; } }
+</style>

@@ -1,0 +1,176 @@
+---
+import siteData from '../data/site-data.json';
+import SourceBadge from './SourceBadge.astro';
+const g = siteData.growth;
+---
+<section class="tl" data-timeline data-cfg={JSON.stringify(g)} data-reveal>
+  <div class="tl__stagebar" role="group" aria-label="生长阶段">
+    {g.stages.map((s, i) => (
+      <button type="button" class="tl__stop" data-goto={String(i)} aria-label={`查看${s.month}：${s.name}`}>
+        <span class="tl__dot"></span>
+        <span class="tl__month">{s.month}</span>
+      </button>
+    ))}
+  </div>
+
+  <div class="tl__body">
+    <div class="tl__visual">
+      <span class="tl__fruit" data-tl-fruit></span>
+      <span class="tl__brix" data-tl-brix></span>
+    </div>
+    <div class="tl__panel">
+      <p class="tl__name" data-tl-name>—</p>
+      <p class="tl__field" data-tl-field>—</p>
+      <p class="tl__desc" data-tl-desc>—</p>
+    </div>
+  </div>
+
+  <div class="tl__controls">
+    <button type="button" class="tl__play" data-tl-play aria-label="自动播放">▶</button>
+    <input type="range" min="0" max="100" value="0" step="0.5" data-tl-range aria-label="拖动查看生长过程" />
+  </div>
+  <p class="tl__note">{g.keyPoint}<SourceBadge src={g.src} /></p>
+  <p class="tl__variety">{g.variety}</p>
+</section>
+
+<script>
+  function lerpHex(a, b, t) {
+    const pa = a.replace('#', '');
+    const pb = b.replace('#', '');
+    const toR = (v) => parseInt(v, 16);
+    const out = [0, 1, 2].map((i) => {
+      const ca = toR(pa.slice(i * 2, i * 2 + 2));
+      const cb = toR(pb.slice(i * 2, i * 2 + 2));
+      return Math.round(ca + (cb - ca) * t);
+    });
+    return 'rgb(' + out.join(',') + ')';
+  }
+
+  function timelineInit() {
+    const root = document.querySelector('[data-timeline]');
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+    let cfg;
+    try { cfg = JSON.parse(root.dataset.cfg); } catch (e) { return; }
+    const stages = cfg.stages;
+    const range = root.querySelector('[data-tl-range]');
+    const fruit = root.querySelector('[data-tl-fruit]');
+    const brix = root.querySelector('[data-tl-brix]');
+    const nameEl = root.querySelector('[data-tl-name]');
+    const fieldEl = root.querySelector('[data-tl-field]');
+    const descEl = root.querySelector('[data-tl-desc]');
+    const playBtn = root.querySelector('[data-tl-play]');
+    const stopDots = Array.from(root.querySelectorAll('[data-goto]'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const render = (t01) => {
+      const pos = t01 * (stages.length - 1);
+      const i = Math.min(Math.floor(pos), stages.length - 2);
+      const f = pos - i;
+      const a = stages[i];
+      const b = stages[i + 1];
+      const dom = f < 0.5 ? a : b;
+      const color = lerpHex(a.color, b.color, f);
+      const size = a.size + (b.size - a.size) * f;
+      fruit.style.background = 'radial-gradient(circle at 34% 28%, rgba(255,255,255,0.55), ' + color + ' 68%)';
+      fruit.style.width = size + 'px';
+      fruit.style.height = Math.round(size * 1.2) + 'px';
+      brix.textContent = dom.brix;
+      nameEl.textContent = dom.month + ' · ' + dom.name;
+      fieldEl.textContent = '当月田间记录：' + dom.field;
+      descEl.textContent = dom.desc;
+      const idx = stages.indexOf(dom);
+      stopDots.forEach((d, k) => d.classList.toggle('is-on', k <= idx));
+    };
+
+    let raf = null;
+    let t = 0;
+    let playing = false;
+    const step = () => {
+      t += 0.0022;
+      if (t > 1) t = 0;
+      range.value = String(t * 100);
+      render(t);
+      raf = requestAnimationFrame(step);
+    };
+    const play = () => { if (playing) return; playing = true; playBtn.textContent = '❙❙'; raf = requestAnimationFrame(step); };
+    const pause = () => { if (!playing) return; playing = false; playBtn.textContent = '▶'; if (raf) cancelAnimationFrame(raf); raf = null; };
+
+    range.addEventListener('input', () => {
+      pause();
+      t = parseFloat(range.value) / 100;
+      render(t);
+    });
+    playBtn.addEventListener('click', () => { playing ? pause() : play(); });
+    stopDots.forEach((d) => d.addEventListener('click', () => {
+      pause();
+      const k = parseInt(d.dataset.goto, 10);
+      t = stages.length > 1 ? k / (stages.length - 1) : 0;
+      range.value = String(t * 100);
+      render(t);
+    }));
+
+    render(0);
+    if (!reduce) play();
+  }
+  document.addEventListener('astro:page-load', timelineInit);
+  if (document.readyState !== 'loading') timelineInit();
+  else document.addEventListener('DOMContentLoaded', timelineInit);
+</script>
+
+<style>
+  .tl {
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    background: var(--c-white);
+    padding: clamp(1.2rem, 0.8rem + 1.6vw, 2.2rem);
+    box-shadow: none;
+    border-top: 3px solid var(--c-jade);
+  }
+  .tl__stagebar { display: flex; justify-content: space-between; gap: 0.4rem; margin-bottom: 1.6rem; position: relative; }
+  .tl__stagebar::before {
+    content: '';
+    position: absolute;
+    left: 1.2rem;
+    right: 1.2rem;
+    top: 7px;
+    height: 2px;
+    background: var(--c-line);
+  }
+  .tl__stop {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+  }
+  .tl__dot { width: 14px; height: 14px; border-radius: 50%; background: var(--c-white); border: 2px solid var(--c-line); transition: all 0.3s var(--ease); }
+  .tl__stop.is-on .tl__dot { background: var(--c-plum); border-color: var(--c-plum); }
+  .tl__month { font-size: 0.78rem; color: var(--c-muted); }
+  .tl__body { display: grid; gap: clamp(1rem, 0.6rem + 2vw, 2.4rem); grid-template-columns: 1fr; align-items: center; }
+  .tl__visual { display: grid; place-items: center; gap: 0.6rem; min-height: 150px; }
+  .tl__fruit { display: block; width: 40px; height: 48px; border-radius: 50% 50% 48% 48%; transition: width 0.2s linear, height 0.2s linear, background 0.2s linear; box-shadow: inset -6px -8px 18px rgba(0,0,0,0.16); }
+  .tl__brix { font-family: var(--font-num); font-size: 1.1rem; color: var(--c-plum); }
+  .tl__name { font-family: var(--font-title); font-size: var(--step-1); color: var(--c-plum); margin: 0 0 0.4rem; }
+  .tl__field { font-size: 0.9rem; color: var(--c-gold); margin: 0 0 0.5rem; }
+  .tl__desc { color: var(--c-muted); margin: 0; }
+  .tl__controls { display: flex; align-items: center; gap: 0.9rem; margin-top: 1.4rem; }
+  .tl__play {
+    flex: 0 0 auto;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--c-line);
+    background: var(--c-white);
+    color: var(--c-plum);
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .tl__play:hover { background: color-mix(in srgb, var(--c-gold) 22%, var(--c-white)); }
+  .tl__controls input[type='range'] { flex: 1; accent-color: var(--c-plum); height: 1.6rem; cursor: pointer; }
+  .tl__note { margin: 1.2rem 0 0.35rem; color: var(--c-plum); font-size: 0.96rem; }
+  .tl__variety { margin: 0; font-size: 0.86rem; color: var(--c-muted); }
+  @media (min-width: 760px) { .tl__body { grid-template-columns: 0.6fr 1.4fr; } }
+</style>

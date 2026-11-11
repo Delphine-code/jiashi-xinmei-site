@@ -1,0 +1,105 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  roleLabel?: string;
+  quote: string;
+  story: string;
+  src?: string;
+}
+import SourceBadge from './SourceBadge.astro';
+const { name, role, roleLabel, quote, story, src } = Astro.props;
+const storyId = `person-story-${name}`;
+---
+
+<article class="pc" data-person data-reveal>
+  <button class="pc__flip" type="button" data-flip aria-expanded="false" aria-controls={storyId} aria-label={"展开 " + name + " 的故事"}>
+    <span class="pc__avatar" aria-hidden="true">{name.slice(0, 1)}</span>
+    <span class="pc__summary">
+      <span class="pc__name">{name}</span>
+      {roleLabel && <span class="pc__label">{roleLabel}</span>}
+      <span class="pc__role">{role}</span>
+      <span class="pc__quote">「{quote}」</span>
+    </span>
+    <span class="pc__chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="pc__story" id={storyId} hidden>
+    <p>{story}</p>
+    <span class="pc__hint">点击收起</span>
+  </div>
+  {src && <p class="pc__meta">采访 / 报道 <SourceBadge src={src} /></p>}
+</article>
+
+<script>
+  function personInit() {
+    document.querySelectorAll('[data-person] [data-flip]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const person = btn.closest('[data-person]');
+        const story = person.querySelector('.pc__story');
+        const on = !story.hidden;
+        story.hidden = on;
+        person.classList.toggle('is-expanded', !on);
+        btn.setAttribute('aria-expanded', on ? 'false' : 'true');
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', personInit);
+  if (document.readyState !== 'loading') personInit();
+  else document.addEventListener('DOMContentLoaded', personInit);
+</script>
+
+<style>
+  .pc { display: flex; flex-direction: column; border-top: 1px solid var(--c-outline-variant); }
+  .pc:last-child { border-bottom: 1px solid var(--c-outline-variant); }
+  .pc__flip {
+    appearance: none;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    transition: background 0.2s var(--ease), padding-inline 0.2s var(--ease);
+  }
+  .pc__flip:hover, .pc__flip:focus-visible { padding-inline: 0.75rem; background: color-mix(in srgb, var(--c-surface-variant) 46%, transparent); }
+  .pc__flip:focus-visible { outline: 3px solid var(--c-gold); outline-offset: -3px; }
+  .pc__avatar {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 28%, #a05bb8, var(--c-plum));
+    color: #fff;
+    font-family: var(--font-title);
+    font-size: 1.4rem;
+    flex: 0 0 auto;
+  }
+  .pc__summary { display: grid; gap: 0.25rem; min-width: 0; }
+  .pc__name { font-family: var(--font-title); font-size: var(--step-1); color: var(--c-plum); }
+  .pc__label {
+    justify-self: start;
+    padding: 0.12rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-gold) 24%, transparent);
+    color: var(--c-plum);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+  .pc__role { font-size: 0.85rem; color: var(--c-muted); }
+  .pc__quote { font-size: 0.94rem; color: var(--c-plum-deep); line-height: 1.65; margin-top: 0.1rem; }
+  .pc__chevron { color: var(--c-plum); font-size: 1.35rem; transition: transform 0.2s var(--ease); }
+  .pc.is-expanded .pc__chevron { transform: rotate(180deg); }
+  .pc__story { margin: 0 0 0.85rem 4.2rem; padding: 0.75rem 1rem; border-left: 3px solid var(--c-gold); background: color-mix(in srgb, var(--c-gold) 9%, transparent); font-size: 0.92rem; line-height: 1.8; }
+  .pc__story p { margin: 0 0 0.5rem; }
+  .pc__hint { font-size: 0.76rem; color: var(--c-muted); letter-spacing: 0.06em; }
+  .pc__meta { margin: 0.4rem 0 0; font-size: 0.72rem; color: var(--c-muted); }
+  @media (max-width: 520px) { .pc__story { margin-left: 0; } }
+</style>

@@ -1,0 +1,76 @@
+---
+import SourceBadge from './SourceBadge.astro';
+import siteData from '../data/site-data.json';
+const price = siteData.charts.price;
+---
+<section class="pc" data-price-chart data-cfg={JSON.stringify(price)} data-reveal>
+  <div class="pc__chart" data-chart></div>
+  <p class="pc__cap">{price.outputNote}<SourceBadge src={price.src} /></p>
+</section>
+
+<script>
+  import * as echarts from 'echarts';
+  const PLUM = '#8f4fb8';
+  const GOLD = '#ffb84c';
+
+  function priceInit() {
+    const root = document.querySelector('[data-price-chart]');
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+    let cfg;
+    try { cfg = JSON.parse(root.dataset.cfg); } catch (e) { return; }
+    const years = cfg.points.map((p) => p.year);
+    const prices = cfg.points.map((p) => Number(p.price));
+    const outputs = cfg.outputs || [null, null, null];
+    const el = root.querySelector('[data-chart]');
+    const chart = echarts.getInstanceByDom(el) || echarts.init(el);
+    window.addEventListener('resize', () => chart.resize());
+
+    chart.setOption({
+      grid: { left: 8, right: 8, top: 48, bottom: 8, containLabel: true },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+      legend: { top: 0, left: 0, data: ['收购价', '产量'], textStyle: { color: '#9b8ca8' } },
+      xAxis: { type: 'category', data: years, axisLine: { lineStyle: { color: 'rgba(150,130,175,0.35)' } }, axisLabel: { color: '#9b8ca8' } },
+      yAxis: [
+        { type: 'value', name: '收购价（元/kg）', min: 0, max: 24, splitLine: { lineStyle: { color: 'rgba(150,130,175,0.22)' } }, axisLabel: { color: '#9b8ca8' }, nameTextStyle: { color: '#9b8ca8' } },
+        { type: 'value', name: '产量（万吨）', min: 0, splitLine: { show: false }, axisLabel: { color: '#9b8ca8' }, nameTextStyle: { color: '#9b8ca8' } }
+      ],
+      series: [
+        {
+          name: '产量',
+          type: 'bar',
+          yAxisIndex: 1,
+          data: outputs,
+          barMaxWidth: 46,
+          itemStyle: { color: 'rgba(216,168,90,0.3)', borderRadius: [6, 6, 0, 0] },
+          label: { show: true, position: 'top', color: GOLD, formatter: (p) => (p.value == null ? '' : p.value + ' 万吨+') }
+        },
+        {
+          name: '收购价',
+          type: 'line',
+          data: prices,
+          symbolSize: 13,
+          lineStyle: { width: 3.5, color: PLUM },
+          itemStyle: { color: PLUM },
+          label: { show: true, position: 'top', color: PLUM, fontWeight: 700, formatter: '{c} 元/kg' },
+          markArea: {
+            silent: true,
+            itemStyle: { color: 'rgba(143,182,92,0.09)' },
+            data: [{ xAxis: years[years.length - 1] }]
+          }
+        }
+      ],
+      animationDuration: 700,
+      animationEasing: 'cubicOut'
+    });
+  }
+
+  document.addEventListener('astro:page-load', priceInit);
+  if (document.readyState !== 'loading') priceInit();
+  else document.addEventListener('DOMContentLoaded', priceInit);
+</script>
+
+<style>
+  .pc__chart { width: 100%; height: clamp(260px, 34vw, 360px); }
+  .pc__cap { font-size: 0.8rem; color: var(--c-muted); margin: 0.6rem 0 0; }
+</style>

@@ -1,0 +1,39 @@
+:root {
+  --c-plum: #6d3455;
+  --c-plum-deep: #2d202b;
+  --c-plum-soft: #93657f;
+  --c-berry: #a84e62;
+  --c-gold: #a8793d;
+  --c-gold-soft: #ead8ad;
+  --c-mist: #f5f1ea;
+  --c-ink: #3d5a4a;
+  --c-jade: #789b6b;
+  --c-line: #d6cec5;
+  --c-muted: #6f6864;
+  --c-white: #fffdfa;
+  --c-surface: #fffdfa;
+  --c-surface-variant: #eee8e2;
+  --c-outline: #c9beb5;
+  --c-outline-variant: #e1dad3;
+  --c-on-surface: #2d202b;
+  --c-on-surface-variant: #6f6864;
+
+  --font-title: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  --font-num: 'DIN Alternate', 'Bebas Neue', 'Helvetica Neue', Arial, sans-serif;
+
+  --step-0: clamp(1rem, 0.98rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.35rem + 1.2vw, 2.25rem);
+  --step-3: clamp(2.1rem, 1.6rem + 2.4vw, 3.4rem);
+  --step-4: clamp(2.8rem, 1.8rem + 4vw, 5rem);
+
+  --gap: clamp(1rem, 0.6rem + 1.6vw, 2rem);
+  --section-y: clamp(3.4rem, 2rem + 5vw, 6rem);
+  --wrap: 1180px;
+  --radius: 16px;
+  --radius-small: 10px;
+  --shadow: 0 10px 30px -24px rgba(48, 37, 43, 0.42);
+  --shadow-raised: 0 18px 38px -24px rgba(48, 37, 43, 0.36);
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">梅梅·戈壁守护者 IP 概念稿</title>
+  <desc id="desc">一枚拟人化的紫色伽师新梅，戴着叶片发饰与沙金色围巾，站在戈壁与果园之间。</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8e7cf"/>
+      <stop offset="1" stop-color="#f3c892"/>
+    </linearGradient>
+    <linearGradient id="dune" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6aa68"/>
+      <stop offset="1" stop-color="#c98351"/>
+    </linearGradient>
+    <linearGradient id="plum" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9c4d9a"/>
+      <stop offset="1" stop-color="#54295f"/>
+    </linearGradient>
+    <linearGradient id="scarf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8b35c"/>
+      <stop offset="1" stop-color="#b96b3f"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#613c4d" flood-opacity=".18"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" rx="72" fill="url(#sky)"/>
+  <circle cx="787" cy="192" r="84" fill="#f8d88c" opacity=".72"/>
+  <path d="M0 696c155-103 273-96 403-21 120 69 222 64 337-4 106-62 194-52 284 10v343H0z" fill="#dda365"/>
+  <path d="M0 778c173-96 294-53 427 7 126 57 260 37 359-22 96-57 159-53 238-15v280H0z" fill="url(#dune)"/>
+  <path d="M95 677c75-45 151-61 232-43M675 647c78-41 143-42 213-11" fill="none" stroke="#f5d49e" stroke-width="11" stroke-linecap="round" opacity=".7"/>
+
+  <g filter="url(#shadow)">
+    <ellipse cx="505" cy="895" rx="184" ry="34" fill="#7d4d50" opacity=".22"/>
+    <path d="M404 793c-19 48-27 78-32 112h77l26-115z" fill="#4e3b54"/>
+    <path d="M542 790c22 48 32 78 39 115h-78l-22-117z" fill="#4e3b54"/>
+    <path d="M364 896c17-17 60-17 87 0v21h-92zM499 896c18-17 61-17 89 0v21h-95z" fill="#473348"/>
+
+    <path d="M354 500c7-112 83-191 168-191s160 79 167 191c7 118-63 263-167 263S347 618 354 500z" fill="url(#plum)" stroke="#432248" stroke-width="9"/>
+    <ellipse cx="440" cy="468" rx="31" ry="44" fill="#b66db0" opacity=".28"/>
+    <ellipse cx="594" cy="468" rx="25" ry="37" fill="#311c45" opacity=".18"/>
+    <path d="M419 512c15 23 32 32 51 32s36-9 51-32" fill="none" stroke="#3b204b" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="438" cy="489" r="11" fill="#2b183b"/>
+    <circle cx="585" cy="489" r="11" fill="#2b183b"/>
+    <circle cx="434" cy="485" r="4" fill="#fff"/>
+    <circle cx="581" cy="485" r="4" fill="#fff"/>
+    <path d="M398 563c17 19 40 25 58 22M592 585c19 3 41-4 56-22" fill="none" stroke="#d68b92" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+
+    <path d="M400 364c-53-36-69-78-45-108 31 24 55 48 69 80z" fill="#648c59" stroke="#3d684a" stroke-width="8"/>
+    <path d="M611 344c20-48 51-74 87-76 1 42-26 83-75 108z" fill="#7ea15e" stroke="#3d684a" stroke-width="8"/>
+    <path d="M458 317c36-62 91-87 152-73-17 53-72 91-152 73z" fill="#86aa69" stroke="#3d684a" stroke-width="8"/>
+    <path d="M487 309c22-24 57-43 94-50" fill="none" stroke="#c4d58a" stroke-width="8" stroke-linecap="round"/>
+
+    <path d="M373 665c-67 6-109 43-126 91 49 24 116 17 163-20z" fill="#6f3d75" stroke="#432248" stroke-width="9"/>
+    <path d="M646 665c67 6 109 43 126 91-49 24-116 17-163-20z" fill="#6f3d75" stroke="#432248" stroke-width="9"/>
+    <path d="M347 739c-37 28-54 61-63 94 45 12 87-6 119-52z" fill="#9a5b91" stroke="#432248" stroke-width="9"/>
+    <path d="M673 739c37 28 54 61 63 94-45 12-87-6-119-52z" fill="#9a5b91" stroke="#432248" stroke-width="9"/>
+
+    <path d="M357 618c42 34 92 48 145 48 51 0 102-14 147-48l-9 98c-43 29-90 43-138 43s-95-14-138-43z" fill="url(#scarf)" stroke="#9c5b40" stroke-width="8"/>
+    <path d="M638 676c40 22 81 44 109 83-33 29-76 33-127 17z" fill="url(#scarf)" stroke="#9c5b40" stroke-width="8"/>
+    <path d="M440 671c20 19 39 27 61 28M572 699c20-4 38-13 56-28" fill="none" stroke="#f3cf78" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+
+    <path d="M286 818c-12 13-21 29-27 47M735 818c12 13 21 29 27 47" stroke="#f6d18b" stroke-width="7" stroke-linecap="round"/>
+    <path d="M292 851l-18 23M304 856l-8 27M730 851l18 23M718 856l8 27" stroke="#f6d18b" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <g fill="#fff6df" opacity=".74">
+    <circle cx="164" cy="278" r="7"/><circle cx="852" cy="386" r="9"/><circle cx="188" cy="548" r="5"/>
+  </g>
+  <path d="M142 853c56 15 97 17 144 5M751 855c45 12 80 10 126-6" fill="none" stroke="#f6d18b" stroke-width="7" stroke-linecap="round" opacity=".75"/>
+</svg>

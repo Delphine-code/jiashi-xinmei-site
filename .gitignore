@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+_backup_images/
+.DS_Store
+.env
+.env.production

@@ -1,0 +1,21 @@
+伽师新梅网页文件说明
+
+一、继续编辑
+使用 VS Code 打开本文件夹，首次运行：
+1. 在终端输入 npm install
+2. 输入 npm run dev
+3. 打开终端显示的本地地址
+
+二、静态部署
+已生成的 dist 文件夹是可直接部署的静态网站文件。
+可将 dist 文件夹上传到 GitHub Pages、Netlify 或其他静态托管服务。
+
+三、重要目录
+src：网页源码、页面、组件和样式，可继续修改
+public：图片、地图数据和其他网站素材
+submission：参赛提交材料
+ dist：构建后的静态网站
+
+四、注意
+不要上传 node_modules、.git、.astro 等缓存或版本目录。
+修改源码后，如需更新 dist，在终端运行 npm run build。
